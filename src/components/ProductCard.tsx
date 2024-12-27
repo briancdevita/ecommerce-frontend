@@ -1,21 +1,17 @@
-import { Box, Typography, Button, Chip, CircularProgress } from "@mui/material";
 
-export default function ProductCard({
-  product,
-}: {
-  product: {
-    id: number;
-    name: string;
-    price: string;
-    description: string;
-    category: string;
-    image?: string;
-    discount?: number; // Campo opcional para descuento
-    claimedPercentage?: number; // Simula el % reclamado
-  };
-}) {
+"use client";
+import { Box, Typography, Button } from "@mui/material";
+import { Product } from "@/types/product";
+
+interface ProductCardProps {
+  product: Product;
+  onClick?: () => void; // `onClick` opcional
+}
+
+export default function ProductCard({ product, onClick }: ProductCardProps) {
   return (
     <Box
+      onClick={onClick} // Agregamos `onClick` si está definido
       sx={{
         maxWidth: 250,
         minWidth: 250,
@@ -25,23 +21,9 @@ export default function ProductCard({
         position: "relative",
         bgcolor: "#fff",
         m: 1,
+        cursor: onClick ? "pointer" : "default", // Cambia el cursor si es clickeable
       }}
     >
-      {/* Descuento */}
-      {product.discount && (
-        <Chip
-          label={`-${product.discount}%`}
-          color="error"
-          sx={{
-            position: "absolute",
-            top: 10,
-            left: 10,
-            zIndex: 1,
-            fontWeight: "bold",
-          }}
-        />
-      )}
-
       {/* Imagen del producto */}
       <Box
         component="img"
@@ -71,7 +53,7 @@ export default function ProductCard({
           {product.description}
         </Typography>
 
-        {/* Precio y Categoría */}
+        {/* Precio */}
         <Typography
           variant="h6"
           color="primary"
@@ -79,25 +61,11 @@ export default function ProductCard({
         >
           ${product.price}
         </Typography>
+
+        {/* Categoría */}
         <Typography variant="caption" color="text.secondary">
           {product.category}
         </Typography>
-
-        {/* Indicador de porcentaje reclamado */}
-        {product.claimedPercentage && (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="caption" color="error">
-              {product.claimedPercentage}% reclamado
-            </Typography>
-            <CircularProgress
-              variant="determinate"
-              value={product.claimedPercentage}
-              size={40}
-              thickness={5}
-              sx={{ ml: 1, color: "error.main" }}
-            />
-          </Box>
-        )}
 
         {/* Botón */}
         <Button
