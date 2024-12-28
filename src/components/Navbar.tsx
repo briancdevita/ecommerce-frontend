@@ -10,8 +10,15 @@ import IconButton from "@mui/material/IconButton";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 import Link from "next/link";
+import { useCart } from "@/app/context/CartContext";
+import { Badge } from "@mui/material";
+import { useCartDrawer } from "@/app/context/CartDrawerContext";
 
 const Navbar = () => {
+  const { state } = useCart()
+  const {openDrawer} = useCartDrawer()
+  const totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -26,10 +33,9 @@ const Navbar = () => {
               Products
             </Link>
           </Button>
-          <IconButton color="inherit">
-            <Link href="/cart" style={{ textDecoration: "none", color: "white" }}>
+          <IconButton color="inherit" onClick={openDrawer} >
+            <Badge badgeContent={totalItems} color="error"/>
               <ShoppingCartIcon />
-            </Link>
           </IconButton>
           <Button color="inherit">
             <Link href="/login" style={{ textDecoration: "none", color: "white" }}>
