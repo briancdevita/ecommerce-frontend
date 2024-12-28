@@ -10,6 +10,10 @@ import { Box } from "@mui/material";
 import { CartProvider } from "./context/CartContext";
 import { CartDrawerProvider } from "./context/CartDrawerContext";
 import CartDrawer from "@/components/CartDrawer";
+import { AuthProvider } from "./context/AuthContext";
+import { Provider } from "react-redux";
+import { store } from "@/store";
+import ToastConfig from "@/utils/ToasConfig";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -22,7 +26,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <CacheProvider value={clientSideEmotionCache}>
+              <AuthProvider>
           <ThemeProvider theme={theme}>
+            <Provider store={store}>
             <CartProvider>
               <CssBaseline />
               <Box
@@ -43,14 +49,18 @@ export default function RootLayout({
                     py: 2,
                   }}
                 >
+
                   {children}
                   <CartDrawer/>
                 </Box>
                 <Footer />
+                <ToastConfig />
                 </CartDrawerProvider>
               </Box>
             </CartProvider>
+            </Provider>
           </ThemeProvider>
+                  </AuthProvider>
         </CacheProvider>
       </body>
     </html>
