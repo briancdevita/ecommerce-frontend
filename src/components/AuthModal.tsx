@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import axiosInstance from "@/utils/axiosInstance";
 import { useAuth } from "@/app/context/AuthContext";
+import { toast } from "react-toastify";
 
 interface AuthModalProps {
   open: boolean;
@@ -35,15 +36,15 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
   
       if (isLogin) {
         login(response.data.token); // Decodifica el token y guarda los datos del usuario
-        alert("Inicio de sesión exitoso");
+        toast.success(`Welcome ${formData.username}`)
         onClose();
       } else {
-        alert("Registro exitoso. Ahora puedes iniciar sesión.");
+        toast.info("Successful registration. Now log in")
         setIsLogin(true); // Cambiar a la pestaña de inicio de sesión
       }
     } catch (error: any) {
       console.error(error.response?.data || error.message);
-      alert("Hubo un error, intenta nuevamente.");
+     toast.error("Hubo un error")
     }
   };
 

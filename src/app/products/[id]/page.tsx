@@ -13,6 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useCart } from "@/app/context/CartContext";
+import { toast } from "react-toastify";
 
 
 const ProductDetail: React.FC = () => {
@@ -60,7 +61,10 @@ const ProductDetail: React.FC = () => {
   }
 
   const handleAddToCart = () => {
-    if (product) addToCart(product, quantity);
+    if (product) {
+      addToCart(product, quantity);
+      toast.success("Product successfully added")
+    }
   };
 
   return (

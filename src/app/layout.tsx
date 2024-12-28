@@ -13,6 +13,7 @@ import CartDrawer from "@/components/CartDrawer";
 import { AuthProvider } from "./context/AuthContext";
 import { Provider } from "react-redux";
 import { store } from "@/store";
+import ToastConfig from "@/utils/ToasConfig";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -53,6 +54,7 @@ export default function RootLayout({
                   <CartDrawer/>
                 </Box>
                 <Footer />
+                <ToastConfig />
                 </CartDrawerProvider>
               </Box>
             </CartProvider>
