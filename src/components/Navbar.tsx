@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -13,11 +13,16 @@ import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
 import { Badge } from "@mui/material";
 import { useCartDrawer } from "@/app/context/CartDrawerContext";
+import AuthModal from "./AuthModal";
 
 const Navbar = () => {
   const { state } = useCart()
   const {openDrawer} = useCartDrawer()
   const totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
+  const [isAuthModalOpen, setAuthModalOpen] = useState(false);
+
+  const handleOpenAuthModal = () => setAuthModalOpen(true);
+  const handleCloseAuthModal = () => setAuthModalOpen(false);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -28,21 +33,21 @@ const Navbar = () => {
               E-Commerce
             </Link>
           </Typography>
-          <Button color="inherit">
-            <Link href="/products" style={{ textDecoration: "none", color: "white" }}>
-              Products
-            </Link>
-          </Button>
           <IconButton color="inherit" onClick={openDrawer} >
             <Badge badgeContent={totalItems} color="error"/>
               <ShoppingCartIcon />
+              
           </IconButton>
-          <Button color="inherit">
-            <Link href="/login" style={{ textDecoration: "none", color: "white" }}>
+          <Button color="inherit" onClick={handleOpenAuthModal}>
+            
               Login
-            </Link>
+       
           </Button>
         </Toolbar>
+        <AuthModal 
+        open={isAuthModalOpen} 
+        onClose={() => setAuthModalOpen(false)} 
+        /> {/* Renderiza el modal */}
       </AppBar>
     </Box>
   );

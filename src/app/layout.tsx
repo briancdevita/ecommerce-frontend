@@ -10,6 +10,7 @@ import { Box } from "@mui/material";
 import { CartProvider } from "./context/CartContext";
 import { CartDrawerProvider } from "./context/CartDrawerContext";
 import CartDrawer from "@/components/CartDrawer";
+import { AuthProvider } from "./context/AuthContext";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <CacheProvider value={clientSideEmotionCache}>
+              <AuthProvider>
           <ThemeProvider theme={theme}>
             <CartProvider>
               <CssBaseline />
@@ -43,6 +45,7 @@ export default function RootLayout({
                     py: 2,
                   }}
                 >
+
                   {children}
                   <CartDrawer/>
                 </Box>
@@ -51,6 +54,7 @@ export default function RootLayout({
               </Box>
             </CartProvider>
           </ThemeProvider>
+                  </AuthProvider>
         </CacheProvider>
       </body>
     </html>
