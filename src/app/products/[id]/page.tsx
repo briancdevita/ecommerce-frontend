@@ -14,11 +14,13 @@ import {
 } from "@mui/material";
 import { useCart } from "@/app/context/CartContext";
 import { toast } from "react-toastify";
+import { useAuth } from "@/app/context/AuthContext";
 
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams(); // Obtén el parámetro dinámico `id` desde la URL
   const { addToCart } = useCart();
+  const {user} = useAuth()
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -61,10 +63,13 @@ const ProductDetail: React.FC = () => {
   }
 
   const handleAddToCart = () => {
-    if (product) {
-      addToCart(product, quantity);
-      toast.success("Product successfully added")
+
+    if (! user ) {
+     toast.error("You must log in to add products to your cart")
+     return;
     }
+    addToCart(product, quantity);
+    toast.success("Product successfully added")
   };
 
   return (

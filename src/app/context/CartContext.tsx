@@ -79,6 +79,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
       dispatch({ type: "ADD_TO_CART", payload: { product, quantity } });
   }
+  
 
 
   const removeFromCart = (productId: number) =>
