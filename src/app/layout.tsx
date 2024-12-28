@@ -11,6 +11,8 @@ import { CartProvider } from "./context/CartContext";
 import { CartDrawerProvider } from "./context/CartDrawerContext";
 import CartDrawer from "@/components/CartDrawer";
 import { AuthProvider } from "./context/AuthContext";
+import { Provider } from "react-redux";
+import { store } from "@/store";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -25,6 +27,7 @@ export default function RootLayout({
         <CacheProvider value={clientSideEmotionCache}>
               <AuthProvider>
           <ThemeProvider theme={theme}>
+            <Provider store={store}>
             <CartProvider>
               <CssBaseline />
               <Box
@@ -53,6 +56,7 @@ export default function RootLayout({
                 </CartDrawerProvider>
               </Box>
             </CartProvider>
+            </Provider>
           </ThemeProvider>
                   </AuthProvider>
         </CacheProvider>
