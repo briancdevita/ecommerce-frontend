@@ -75,14 +75,6 @@ export default function CartDrawer() {
               </Typography>
               <Button
                 variant="contained"
-                color="success"
-                fullWidth
-                sx={{ mt: 2 }}
-              >
-                Checkout
-              </Button>
-              <Button
-                variant="contained"
                 color="primary"
                 fullWidth
                 onClick={() => setShowOrderSummary(true)}

@@ -47,9 +47,10 @@ export default function OrderSummaryModal({ open, onClose }: OrderSummaryModalPr
             </Box>
           ))}
           <Typography variant="h6" mt={2}>Total: ${total.toFixed(2)}</Typography>
-          <Box display="flex" justifyContent="space-between" mt={4}>
-            <Button variant="outlined" onClick={onClose}>Cancelar</Button>
-            <Button variant="contained" color="primary" onClick={handleConfirmOrder}>Confirmar</Button>
+          <Box display="flex" justifyContent="space-between" mt={4} gap={2} >
+            <Button variant="outlined" onClick={onClose} >Cancelar</Button>
+            
+            <Button variant="contained"  color="primary" onClick={handleConfirmOrder}>Confirmar</Button>
           </Box>
         </Box>
       </DialogContent>

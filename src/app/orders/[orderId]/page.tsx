@@ -7,15 +7,13 @@ import {
   Typography,
   CircularProgress,
   Container,
-  Grid,
   Card,
-  CardContent,
   CardMedia,
   Button,
   Divider,
-  Stack,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
+import withAuth from "@/utils/withAuth";
 
 interface Order {
   id: number;
@@ -28,7 +26,7 @@ interface Order {
   }[];
 }
 
-export default function OrdersPage() {
+function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -144,3 +142,5 @@ export default function OrdersPage() {
     </Container>
   );
 }
+
+export default withAuth(OrdersPage) 
