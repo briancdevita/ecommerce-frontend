@@ -1,5 +1,6 @@
 "use client";
 import { jwtDecode } from "jwt-decode";
+import { redirect } from "next/navigation";
  // Asegúrate de tener instalada esta librería
 import React, { createContext, useContext, useState, useEffect } from "react";
 
@@ -41,15 +42,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setToken(newToken);
   };
 
+  
   const login = (newToken: string) => {
     localStorage.setItem("token", newToken);
     handleToken(newToken);
+    
   };
 
   const logout = () => {
     localStorage.removeItem("token");
     setToken(null);
     setUser(null);
+    redirect("/products")
   };
 
   return (
