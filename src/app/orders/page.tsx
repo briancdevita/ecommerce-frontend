@@ -12,6 +12,7 @@ import {
   Button,
   Collapse,
 } from "@mui/material";
+import withAuth from "@/utils/withAuth";
 
 interface Order {
   id: number;
@@ -116,4 +117,4 @@ const OrdersPage: React.FC = () => {
   );
 };
 
-export default OrdersPage;
+export default withAuth(OrdersPage);
