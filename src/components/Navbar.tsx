@@ -13,18 +13,14 @@ import { useCart } from "@/app/context/CartContext";
 import { Badge } from "@mui/material";
 import { useCartDrawer } from "@/app/context/CartDrawerContext";
 import AuthModal from "./AuthModal";
-import { useSelector, useDispatch } from "react-redux";
-
-import { useRouter } from "next/navigation";
-import { RootState } from "@/store";
-import { logout } from "@/features/auth/authSlice";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useAuth } from "@/app/context/AuthContext";
-
+import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
 const Navbar = () => {
   const { state } = useCart();
   const { openDrawer } = useCartDrawer();
-  const dispatch = useDispatch();
-  const router = useRouter();
+
 
   const { user, logout } = useAuth()
   const totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
@@ -56,17 +52,27 @@ const Navbar = () => {
 
           {/* Mostrar dependiendo del estado del usuario */}
           {user ? (
+
+            <>
             <Box display="flex" alignItems="center" gap={2}>
               
               <Button color="inherit" onClick={logout}>
-                Logout
+                <LogoutIcon/>
               </Button>
-              <Typography variant="body1" color="white">Hello, {user.username}</Typography>
             </Box>
+
+              <IconButton color="inherit" >
+                <Link href="/profile">
+                <AccountCircleIcon sx={{color:"white"}}/>
+                </Link>
+            </IconButton>
+            </>
+
+            
             
           ) : (
             <Button color="inherit" onClick={handleOpenAuthModal}>
-              Login
+              <LoginIcon/>
             </Button>
           )}
         </Toolbar>

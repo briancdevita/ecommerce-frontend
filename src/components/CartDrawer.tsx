@@ -11,11 +11,15 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useCartDrawer } from "@/app/context/CartDrawerContext";
 import { useCart } from "@/app/context/CartContext";
+import { useState } from "react";
+import OrderSummaryModal from "./OrderSummaryModal";
 
 
 export default function CartDrawer() {
   const { isOpen, closeDrawer } = useCartDrawer();
   const { state, removeFromCart } = useCart();
+  const [showOrderSummary, setShowOrderSummary] = useState(false);
+
 
   return (
     <Drawer anchor="right" open={isOpen} onClose={closeDrawer}>
@@ -77,6 +81,19 @@ export default function CartDrawer() {
               >
                 Checkout
               </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={() => setShowOrderSummary(true)}
+                sx={{ mt: 2 }}
+              >
+                Order
+              </Button>
+              <OrderSummaryModal 
+              open={showOrderSummary}
+              onClose={() => setShowOrderSummary(false)}
+              />
             </Box>
           </Box>
         )}

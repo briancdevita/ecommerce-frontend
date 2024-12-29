@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useReducer, ReactNode } from "react";
 import { Product } from "@/types/product";
+import axiosInstance from "@/utils/axiosInstance";
+import { toast } from "react-toastify";
 
 interface CartItem {
   product: Product;
@@ -74,11 +76,50 @@ function cartReducer(state: CartState, action: any): CartState {
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
-  const addToCart = (product: Product, quantity: number) => {
-    console.log("Agregando al carrito:", { product, quantity });
 
+  const addToCart = async (product: Product, quantity: number) => {
+    try {
+     
+  
+      const token = localStorage.getItem("token");
+  
+      if (!token) {
+        throw new Error("Token no encontrado. Inicia sesión.");
+      }
+  
+      await axiosInstance.post(
+        `/cart/add?productId=${product.id}&quantity=${quantity}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Asegúrate de incluir el token
+          },
+        }
+      );
+  
       dispatch({ type: "ADD_TO_CART", payload: { product, quantity } });
-  }
+
+
+     
+      
+  
+      // toast.success(`${product.name} agregado al carrito`);
+    } catch (error: any) {
+      console.error("Error agregando al carrito:", error.response?.data || error.message);
+      toast.error("Hubo un problema al agregar el producto al carrito.");
+    }
+  };
+  
+
+  const clearCart = async () => {
+    try {
+      // await axiosInstance.delete("/cart/clear"); // Si tienes un endpoint para esto
+      dispatch({ type: "CLEAR_CART" }); // Acción que vacía el carrito en el frontend
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+    }
+  };
+  
   
 
 
@@ -88,7 +129,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const updateQuantity = (productId: number, quantity: number) =>
     dispatch({ type: "UPDATE_QUANTITY", payload: { productId, quantity } });
 
-  const clearCart = () => dispatch({ type: "CLEAR_CART" });
 
   return (
     <CartContext.Provider
