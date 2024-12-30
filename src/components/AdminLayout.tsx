@@ -37,7 +37,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const router = useRouter();
 
-  console.log(user)
+
 
   useEffect(() => {
     if (!token) {
@@ -47,7 +47,8 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   
     if (user) {
       // Verifica si el usuario tiene el rol ADMIN
-      const isAdmin = user.roles.some((role) => role.authority === "ADMIN");
+      const isAdmin = user.roles.includes("ADMIN");
+
       if (!isAdmin) {
         router.push("/");
       }

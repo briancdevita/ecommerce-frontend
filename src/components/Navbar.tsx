@@ -18,6 +18,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { logout } from '../redux/slices/authSlice'
+import { clearCart } from "@/redux/slices/cartSlice";
 
 
 
@@ -29,7 +30,7 @@ const Navbar = () => {
   const cartItems = useSelector((state: RootState)=> state.cart.items)
 
 
-  // const { user, logout } = useAuth()\
+
   const {user} = useSelector((state: RootState)=> state.auth);
   const dispatch = useDispatch()
 
@@ -44,6 +45,7 @@ const Navbar = () => {
   const handleLogout = () => {
     dispatch(logout()); // Actualiza el estado global
     localStorage.removeItem("token"); // Limpia el token almacenado
+    dispatch(clearCart())
   };
 
 

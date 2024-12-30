@@ -4,9 +4,9 @@ import { Dialog, DialogTitle, DialogContent, Box, Typography, Button } from "@mu
 import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { clearCartThunk } from "@/redux/thunks/cartThunks";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { clearCart } from "@/redux/slices/cartSlice";
 
 interface OrderSummaryModalProps {
   open: boolean;
@@ -16,6 +16,7 @@ interface OrderSummaryModalProps {
 export default function OrderSummaryModal({ open, onClose }: OrderSummaryModalProps) {
 
   const cartItems = useSelector((state:RootState)=> state.cart.items)
+  const dispatch = useDispatch();
   
   const router = useRouter();
 
@@ -31,12 +32,14 @@ export default function OrderSummaryModal({ open, onClose }: OrderSummaryModalPr
               Authorization: `Bearer ${localStorage.getItem("token")}`, // Envía el token
             },
           });
+          console.log("Order created:", response.data);
+
       toast.success("¡Orden creada exitosamente!");
-      clearCartThunk() // Limpia el carrito
+      dispatch(clearCart())
       onClose(); // Cierra el modal
       router.push(`/orders/${response.data.id}`); // Redirige a la página de resumen
     } catch (error) {
-      console.error(error);
+      console.error("Error creating order:", error.response?.data || error.message);
       toast.error("Hubo un problema al crear la orden. Intenta nuevamente.");
     }
   };

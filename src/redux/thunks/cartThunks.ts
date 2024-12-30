@@ -1,6 +1,6 @@
 // redux/thunks/cartThunks.ts
 import { AppDispatch } from "@/redux/store";
-import { addItem, removeItem, clearCart, setCart } from "../slices/cartSlice";
+import { addItem,  clearCart, setCart } from "../slices/cartSlice";
 import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
 import { Product } from "@/types/product";
@@ -19,6 +19,7 @@ export const fetchCart = () => async (dispatch: AppDispatch) => {
 // Agregar un producto al carrito
 export const addToCart =
   (product: Product, quantity: number) => async (dispatch: AppDispatch) => {
+    console.log({productId: product.id, quantity: quantity})
     try {
       await axiosInstance.post(
         `/cart/add?productId=${product.id}&quantity=${quantity}`

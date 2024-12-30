@@ -15,13 +15,15 @@ import { useState } from "react";
 import OrderSummaryModal from "./OrderSummaryModal";
 
 import { removeItem } from "@/redux/slices/cartSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 
 export default function CartDrawer() {
   const { isOpen, closeDrawer } = useCartDrawer();
   const [showOrderSummary, setShowOrderSummary] = useState(false);
   const cartItems = useSelector((state: RootState)=> state.cart.items)
+  const dispatch  = useDispatch()
 
 
   return (
@@ -55,7 +57,7 @@ export default function CartDrawer() {
                   <Button
                     size="small"
                     color="error"
-                    onClick={() => removeItem(item.product.id)}
+                    onClick={() => dispatch(removeItem(item.product.id))}
                   >
                     Remove
                   </Button>

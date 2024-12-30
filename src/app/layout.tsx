@@ -13,8 +13,10 @@ import { Provider } from "react-redux";
 
 import ToastConfig from "@/utils/ToasConfig";
 import { Box, CssBaseline } from "@mui/material";
-import store from "@/redux/store";
+
 import AppInitializer from "@/components/AppInitializer";
+import { persistor, store } from "@/redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 
 
@@ -29,6 +31,7 @@ export default function RootLayout({
       <body>
 
             <Provider store={store}>
+            <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
             <AppInitializer />
           <ThemeProvider theme={theme}>
  
@@ -61,7 +64,7 @@ export default function RootLayout({
               </Box>
 
           </ThemeProvider>
-    
+          </PersistGate>
             </Provider>
 
       
