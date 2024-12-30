@@ -14,13 +14,16 @@ import {
 } from "@mui/material";
 import { useCart } from "@/app/context/CartContext";
 import { toast } from "react-toastify";
-import { useAuth } from "@/app/context/AuthContext";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 
 const ProductDetail: React.FC = () => {
-  const { id } = useParams(); // Obtén el parámetro dinámico `id` desde la URL
+  const { id } = useParams(); 
   const { addToCart } = useCart();
-  const {user} = useAuth()
+  const {user} = useSelector((state: RootState)=> state.auth);
+
+
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);

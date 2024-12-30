@@ -1,3 +1,5 @@
+"use client"
+
 import { Dialog, DialogTitle, DialogContent, Box, Typography, Button } from "@mui/material";
 import { useCart } from "@/app/context/CartContext";
 import axiosInstance from "@/utils/axiosInstance";

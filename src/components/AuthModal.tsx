@@ -12,8 +12,11 @@ import {
   Button,
 } from "@mui/material";
 import axiosInstance from "@/utils/axiosInstance";
-import { useAuth } from "@/app/context/AuthContext";
+
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { login } from "@/redux/slices/authSlice";
+import { jwtDecode } from "jwt-decode";
 
 interface AuthModalProps {
   open: boolean;
@@ -21,7 +24,8 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ open, onClose }: AuthModalProps) {
-  const { login } = useAuth(); // Usa `login` en lugar de `setToken`
+  // 
+  const dispatch = useDispatch()
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ username: "", email: "", password: "" });
 
@@ -35,16 +39,29 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
       const response = await axiosInstance.post(endpoint, formData);
   
       if (isLogin) {
-        login(response.data.token); // Decodifica el token y guarda los datos del usuario
-        toast.success(`Welcome ${formData.username}`)
+        const token = response.data.token;
+        const decoded: any = jwtDecode(token);
+  
+        dispatch(
+          login({
+            token: token,
+            user: {
+              username: decoded.sub,
+              email: decoded.email,
+              roles: decoded.roles.map((role: { authority: string }) => role.authority),
+            },
+          })
+        );
+        localStorage.setItem("token", token);
+        toast.success(`Welcome ${decoded.sub}`);
         onClose();
       } else {
-        toast.info("Successful registration. Now log in")
-        setIsLogin(true); // Cambiar a la pestaña de inicio de sesión
+        toast.info("Successful registration. Now log in");
+        setIsLogin(true);
       }
     } catch (error: any) {
       console.error(error.response?.data || error.message);
-     toast.error("Hubo un error")
+      toast.error("Hubo un error");
     }
   };
 

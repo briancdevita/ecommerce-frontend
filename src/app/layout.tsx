@@ -3,19 +3,22 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { theme } from "@/styles/theme";
-import { createEmotionCache } from "@/utils/emotionCache";
-import { CacheProvider } from "@emotion/react";
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { Box } from "@mui/material";
+
+import {  ThemeProvider } from "@emotion/react";
+
 import { CartProvider } from "./context/CartContext";
 import { CartDrawerProvider } from "./context/CartDrawerContext";
 import CartDrawer from "@/components/CartDrawer";
-import { AuthProvider } from "./context/AuthContext";
-import { Provider } from "react-redux";
-import { store } from "@/store";
-import ToastConfig from "@/utils/ToasConfig";
 
-const clientSideEmotionCache = createEmotionCache();
+import { Provider } from "react-redux";
+
+import ToastConfig from "@/utils/ToasConfig";
+import { Box, CssBaseline } from "@mui/material";
+import store from "@/redux/store";
+import AppInitializer from "@/components/AppInitializer";
+
+
+
 
 export default function RootLayout({
   children,
@@ -25,10 +28,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <CacheProvider value={clientSideEmotionCache}>
-              <AuthProvider>
-          <ThemeProvider theme={theme}>
+
             <Provider store={store}>
+            <AppInitializer />
+          <ThemeProvider theme={theme}>
             <CartProvider>
               <CssBaseline />
               <Box
@@ -58,10 +61,11 @@ export default function RootLayout({
                 </CartDrawerProvider>
               </Box>
             </CartProvider>
-            </Provider>
           </ThemeProvider>
-                  </AuthProvider>
-        </CacheProvider>
+    
+            </Provider>
+
+      
       </body>
     </html>
   );

@@ -1,12 +1,14 @@
 "use client";
 
 import React from "react";
-import { Box, Typography, Avatar, Paper, Button, Container } from "@mui/material";
+import { Typography, Avatar, Paper, Button, Container } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/context/AuthContext";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const ProfilePage: React.FC = () => {
-  const { user } = useAuth();
+  const {user} = useSelector((state: RootState)=> state.auth);
+
   const router = useRouter();
 
   return (
