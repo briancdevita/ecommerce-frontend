@@ -18,7 +18,6 @@ import {
   Button,
 } from "@mui/material";
 import axiosInstance from "@/utils/axiosInstance";
-import { useRouter } from "next/navigation";
 
 interface Order {
   id: number;
@@ -31,7 +30,7 @@ interface Order {
 const OrdersPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
+
 
   useEffect(() => {
     axiosInstance

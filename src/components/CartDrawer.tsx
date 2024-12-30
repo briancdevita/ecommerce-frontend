@@ -10,15 +10,20 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useCartDrawer } from "@/app/context/CartDrawerContext";
-import { useCart } from "@/app/context/CartContext";
+
 import { useState } from "react";
 import OrderSummaryModal from "./OrderSummaryModal";
+
+import { removeItem } from "@/redux/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 
 export default function CartDrawer() {
   const { isOpen, closeDrawer } = useCartDrawer();
-  const { state, removeFromCart } = useCart();
   const [showOrderSummary, setShowOrderSummary] = useState(false);
+  const cartItems = useSelector((state: RootState)=> state.cart.items)
+  const dispatch  = useDispatch()
 
 
   return (
@@ -33,14 +38,14 @@ export default function CartDrawer() {
         <Divider sx={{ my: 2 }} />
 
         {/* Carrito vacío */}
-        {state.items.length === 0 ? (
+        {cartItems.length === 0 ? (
           <Typography textAlign="center" mt={2}>
             Your cart is empty.
           </Typography>
         ) : (
           <Box>
             {/* Lista de productos */}
-            {state.items.map((item) => (
+            {cartItems.map((item) => (
               <Box key={item.product.id} mb={2}>
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">{item.product.name}</Typography>
@@ -52,7 +57,7 @@ export default function CartDrawer() {
                   <Button
                     size="small"
                     color="error"
-                    onClick={() => removeFromCart(item.product.id)}
+                    onClick={() => dispatch(removeItem(item.product.id))}
                   >
                     Remove
                   </Button>
@@ -65,7 +70,7 @@ export default function CartDrawer() {
             <Box mt={3}>
               <Typography variant="h6" textAlign="right">
                 Total: $
-                {state.items
+                {cartItems
                   .reduce(
                     (total, item) =>
                       total + item.product.price * item.quantity,

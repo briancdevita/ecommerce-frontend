@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useAuth } from "@/app/context/AuthContext";
+
 import { useRouter } from "next/navigation";
 import {
   Box,
@@ -22,24 +22,41 @@ import StoreIcon from "@mui/icons-material/Store";
 import PeopleIcon from "@mui/icons-material/People";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
+
+
 const drawerWidth = 240;
 
 const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { user, loading } = useAuth(); // Obtén `loading` del contexto
+
+
+  const {user, token } = useSelector((state: RootState)=> state.auth);
+
+
   const router = useRouter();
 
+
+
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        router.push("/"); // Redirige si no hay usuario
-      } else if (!user.roles.includes("ADMIN")) {
-        router.push("/"); // Redirige si no es ADMIN
+    if (!token) {
+      router.push("/");
+      return;
+    }
+  
+    if (user) {
+      // Verifica si el usuario tiene el rol ADMIN
+      const isAdmin = user.roles.includes("ADMIN");
+
+      if (!isAdmin) {
+        router.push("/");
       }
     }
-  }, [user, loading, router]);
-
-  if (loading) {
+  }, [user, token, router]);
+  
+  if (!token || !user) {
+    // Muestra una pantalla de carga si los datos aún no están listos
     return (
       <Box
         display="flex"
@@ -51,6 +68,8 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </Box>
     );
   }
+  
+  
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -136,7 +155,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
           }}
           open
-        >
+        > 
           {drawer}
         </Drawer>
       </Box>

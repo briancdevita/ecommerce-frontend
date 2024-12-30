@@ -9,27 +9,44 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Link from "next/link";
-import { useCart } from "@/app/context/CartContext";
 import { Badge } from "@mui/material";
 import { useCartDrawer } from "@/app/context/CartDrawerContext";
 import AuthModal from "./AuthModal";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useAuth } from "@/app/context/AuthContext";
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { logout } from '../redux/slices/authSlice'
+import { clearCart } from "@/redux/slices/cartSlice";
+
+
+
+
+
 const Navbar = () => {
-  const { state } = useCart();
+
   const { openDrawer } = useCartDrawer();
+  const cartItems = useSelector((state: RootState)=> state.cart.items)
 
 
-  const { user, logout } = useAuth()
-  const totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
+
+  const {user} = useSelector((state: RootState)=> state.auth);
+  const dispatch = useDispatch()
+
+  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
 
   const handleOpenAuthModal = () => setAuthModalOpen(true);
   const handleCloseAuthModal = () => setAuthModalOpen(false);
 
+
+  const handleLogout = () => {
+    dispatch(logout()); // Actualiza el estado global
+    localStorage.removeItem("token"); // Limpia el token almacenado
+    dispatch(clearCart())
+  };
 
 
   return (
@@ -56,7 +73,7 @@ const Navbar = () => {
             <>
             <Box display="flex" alignItems="center" gap={2}>
               
-              <Button color="inherit" onClick={logout}>
+              <Button color="inherit" onClick={handleLogout}>
                 <LogoutIcon/>
               </Button>
             </Box>

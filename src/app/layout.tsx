@@ -3,19 +3,23 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { theme } from "@/styles/theme";
-import { createEmotionCache } from "@/utils/emotionCache";
-import { CacheProvider } from "@emotion/react";
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { Box } from "@mui/material";
-import { CartProvider } from "./context/CartContext";
+
+import {  ThemeProvider } from "@emotion/react";
+
 import { CartDrawerProvider } from "./context/CartDrawerContext";
 import CartDrawer from "@/components/CartDrawer";
-import { AuthProvider } from "./context/AuthContext";
-import { Provider } from "react-redux";
-import { store } from "@/store";
-import ToastConfig from "@/utils/ToasConfig";
 
-const clientSideEmotionCache = createEmotionCache();
+import { Provider } from "react-redux";
+
+import ToastConfig from "@/utils/ToasConfig";
+import { Box, CssBaseline } from "@mui/material";
+
+import AppInitializer from "@/components/AppInitializer";
+import { persistor, store } from "@/redux/store";
+import { PersistGate } from "redux-persist/integration/react";
+
+
+
 
 export default function RootLayout({
   children,
@@ -25,11 +29,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <CacheProvider value={clientSideEmotionCache}>
-              <AuthProvider>
-          <ThemeProvider theme={theme}>
+
             <Provider store={store}>
-            <CartProvider>
+            <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+            <AppInitializer />
+          <ThemeProvider theme={theme}>
+ 
               <CssBaseline />
               <Box
                 sx={{
@@ -57,11 +62,12 @@ export default function RootLayout({
                 <ToastConfig />
                 </CartDrawerProvider>
               </Box>
-            </CartProvider>
-            </Provider>
+
           </ThemeProvider>
-                  </AuthProvider>
-        </CacheProvider>
+          </PersistGate>
+            </Provider>
+
+      
       </body>
     </html>
   );

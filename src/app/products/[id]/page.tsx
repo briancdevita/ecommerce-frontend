@@ -12,20 +12,23 @@ import {
   Container,
   TextField,
 } from "@mui/material";
-import { useCart } from "@/app/context/CartContext";
-import { toast } from "react-toastify";
-import { useAuth } from "@/app/context/AuthContext";
+
+
+import { useDispatch } from "react-redux";
+import { addToCart } from "@/redux/thunks/cartThunks";
 
 
 const ProductDetail: React.FC = () => {
-  const { id } = useParams(); // Obtén el parámetro dinámico `id` desde la URL
-  const { addToCart } = useCart();
-  const {user} = useAuth()
+  const { id } = useParams(); 
+  const dispatch = useDispatch();
+
+
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
+
 
   useEffect(() => {
     if (id) {
@@ -62,15 +65,7 @@ const ProductDetail: React.FC = () => {
     );
   }
 
-  const handleAddToCart = () => {
-
-    if (! user ) {
-     toast.error("You must log in to add products to your cart")
-     return;
-    }
-    addToCart(product, quantity);
-    toast.success("Product successfully added")
-  };
+ 
 
   return (
     <Container>
@@ -111,7 +106,7 @@ const ProductDetail: React.FC = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={handleAddToCart}
+            onClick={() => dispatch(addToCart(product, quantity))}
           >
             Add to Cart
           </Button>
