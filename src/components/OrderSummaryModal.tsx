@@ -1,10 +1,12 @@
 "use client"
 
 import { Dialog, DialogTitle, DialogContent, Box, Typography, Button } from "@mui/material";
-import { useCart } from "@/app/context/CartContext";
 import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { clearCartThunk } from "@/redux/thunks/cartThunks";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 interface OrderSummaryModalProps {
   open: boolean;
@@ -12,10 +14,12 @@ interface OrderSummaryModalProps {
 }
 
 export default function OrderSummaryModal({ open, onClose }: OrderSummaryModalProps) {
-  const { state, clearCart } = useCart();
+
+  const cartItems = useSelector((state:RootState)=> state.cart.items)
+  
   const router = useRouter();
 
-  const total = state.items.reduce(
+  const total = cartItems.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
     0
   );
@@ -28,7 +32,7 @@ export default function OrderSummaryModal({ open, onClose }: OrderSummaryModalPr
             },
           });
       toast.success("¡Orden creada exitosamente!");
-      clearCart(); // Limpia el carrito
+      clearCartThunk() // Limpia el carrito
       onClose(); // Cierra el modal
       router.push(`/orders/${response.data.id}`); // Redirige a la página de resumen
     } catch (error) {
@@ -42,7 +46,7 @@ export default function OrderSummaryModal({ open, onClose }: OrderSummaryModalPr
       <DialogTitle>Resumen de la Orden</DialogTitle>
       <DialogContent>
         <Box>
-          {state.items.map((item) => (
+          {cartItems.map((item) => (
             <Box key={item.product.id} display="flex" justifyContent="space-between" mb={2}>
               <Typography>{item.product.name}</Typography>
               <Typography>{item.quantity} x ${item.product.price}</Typography>

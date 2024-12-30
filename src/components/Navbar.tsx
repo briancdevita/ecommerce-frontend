@@ -9,7 +9,6 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Link from "next/link";
-import { useCart } from "@/app/context/CartContext";
 import { Badge } from "@mui/material";
 import { useCartDrawer } from "@/app/context/CartDrawerContext";
 import AuthModal from "./AuthModal";
@@ -25,15 +24,16 @@ import { logout } from '../redux/slices/authSlice'
 
 
 const Navbar = () => {
-  const { state } = useCart();
+
   const { openDrawer } = useCartDrawer();
+  const cartItems = useSelector((state: RootState)=> state.cart.items)
 
 
   // const { user, logout } = useAuth()\
   const {user} = useSelector((state: RootState)=> state.auth);
   const dispatch = useDispatch()
 
-  const totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
+  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
 

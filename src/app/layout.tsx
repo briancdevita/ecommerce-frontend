@@ -6,7 +6,6 @@ import { theme } from "@/styles/theme";
 
 import {  ThemeProvider } from "@emotion/react";
 
-import { CartProvider } from "./context/CartContext";
 import { CartDrawerProvider } from "./context/CartDrawerContext";
 import CartDrawer from "@/components/CartDrawer";
 
@@ -32,7 +31,7 @@ export default function RootLayout({
             <Provider store={store}>
             <AppInitializer />
           <ThemeProvider theme={theme}>
-            <CartProvider>
+ 
               <CssBaseline />
               <Box
                 sx={{
@@ -60,7 +59,7 @@ export default function RootLayout({
                 <ToastConfig />
                 </CartDrawerProvider>
               </Box>
-            </CartProvider>
+
           </ThemeProvider>
     
             </Provider>

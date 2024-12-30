@@ -12,16 +12,17 @@ import {
   Container,
   TextField,
 } from "@mui/material";
-import { useCart } from "@/app/context/CartContext";
+
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "@/redux/thunks/cartThunks";
 import { RootState } from "@/redux/store";
 
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams(); 
-  const { addToCart } = useCart();
   const {user} = useSelector((state: RootState)=> state.auth);
+  const dispatch = useDispatch();
 
 
 
@@ -71,7 +72,7 @@ const ProductDetail: React.FC = () => {
      toast.error("You must log in to add products to your cart")
      return;
     }
-    addToCart(product, quantity);
+    dispatch(addToCart(product, quantity))
     toast.success("Product successfully added")
   };
 
