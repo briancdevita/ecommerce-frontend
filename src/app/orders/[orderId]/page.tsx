@@ -29,7 +29,7 @@ interface Order {
 function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
+
 
   useEffect(() => {
     axiosInstance
@@ -49,54 +49,27 @@ function OrdersPage() {
    * - Llama a la ruta "/api/stripe" para crear la Checkout Session o PaymentIntent (según tu backend).
    * - En este ejemplo, enviamos lineItems para un Checkout Session; ajusta a tu caso.
    */
-  async function handlePay(orderId: number, totalPrice: number) {
+  async function handleOneTimePayment() {
     try {
-      const response = await fetch("/api/stripe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/stripe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          modeType: 'payment',
           lineItems: [
-            {
-              price_data: {
-                currency: "usd",
-                product_data: {
-                  name: `Orden #${orderId}`,
-                },
-                // 1000 = 10.00 USD en centavos, ajusta según tu lógica
-                unit_amount: totalPrice,
-              },
-              // Aquí interpretamos `totalPrice` como la cantidad de ítems;
-              // si más bien querías "monto total en centavos", debes ajustar la lógica.
-              quantity: 2
-            },
+            { price_data: { currency: 'usd', product_data: { name: 'Test' }, unit_amount: 5000 }, quantity: 1 },
           ],
         }),
       });
-
       const data = await response.json();
-      if (data.error) {
-        console.error("Error al crear PaymentIntent o Checkout Session:", data.error);
-        return;
-      }
-
-      // Dependiendo de si tu backend crea un PaymentIntent o una Checkout Session,
-      // la respuesta será distinta. Ajusta este código a lo que devuelves.
       if (data.url) {
-        // Por ejemplo, si es una Checkout Session:
-        // Rediriges a la URL de Stripe Checkout:
         window.location.href = data.url;
-      } else {
-        // O, si es un PaymentIntent, podrías redirigir a tu /checkout/[orderId]
-        // donde usas <CardElement> y confirmas el pago en tu sitio.
-        console.log("PaymentIntent creado:", data.paymentIntentId);
-        console.log("ClientSecret:", data.clientSecret);
-        router.push(`/checkout/${orderId}`);
       }
     } catch (error) {
       console.error(error);
     }
   }
-
+  
   // Mientras cargan las órdenes, muestra un spinner
   if (loading) {
     return (
@@ -187,7 +160,7 @@ function OrdersPage() {
                 color="success"
                 size="small"
                 sx={{ mt: 2 }}
-                onClick={() => handlePay(order.id, order.totalPrice)}
+                onClick={() => handleOneTimePayment()}
               >
                 Pagar
               </Button>

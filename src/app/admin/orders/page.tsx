@@ -40,7 +40,6 @@ const OrdersPage = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching orders:", error);
         setLoading(false);
       });
   }, []);

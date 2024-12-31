@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Box,
@@ -8,27 +8,30 @@ import {
   Container,
   Typography,
   Paper,
-  Divider
+  Divider,
 } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
-/**
- * Página de Éxito (Hosted Checkout)
- */
 export default function SuccessPage() {
   const searchParams = useSearchParams();
-  const sessionId = searchParams.get("session_id");
+  const sessionId = searchParams.get("session_id"); // Obtén el valor del query param
+  const [receiptUrl, setReceiptUrl] = useState("");
+
+
 
   useEffect(() => {
-    // Aquí podrías hacer una llamada a tu backend o a la API de Stripe
-    // para obtener más detalles de la sesión, usando sessionId
-    console.log("session_id:", sessionId);
-  }, [sessionId]);
+    if (sessionId) {
+      fetch(`/api/stripe?session_id=${sessionId}`)
+        .then((res) => res.json())
+        .then((data) => {
 
-  // Ejemplo: Volver al home o a otra parte
-  function handleGoHome() {
-    window.location.href = "/";
-  }
+          if (data.receiptUrl) {
+            setReceiptUrl(data.receiptUrl);
+          }
+        })
+        .catch(console.error);
+    }
+  }, [sessionId]);
 
   return (
     <Container maxWidth="sm" sx={{ mt: 6 }}>
@@ -62,14 +65,25 @@ export default function SuccessPage() {
           </>
         )}
 
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ mt: 3 }}
-          onClick={handleGoHome}
-        >
-          Volver al inicio
-        </Button>
+        <Box sx={{ mt: 3, display: "flex", gap: 2, justifyContent: "center" }}>
+          <Button variant="contained" color="primary" onClick={() => {}}>
+            Volver al inicio
+          </Button>
+
+          {/* Botón para descargar/abrir el recibo en una nueva pestaña */}
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              if (receiptUrl) {
+                window.open(receiptUrl, "_blank", "noopener,noreferrer");
+              }
+            }}
+            disabled={!receiptUrl} // Se deshabilita si no hay URL disponible
+          >
+            Descargar Recibo
+          </Button>
+        </Box>
       </Paper>
     </Container>
   );
