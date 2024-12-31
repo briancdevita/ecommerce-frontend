@@ -44,6 +44,60 @@ function OrdersPage() {
       });
   }, []);
 
+  /** 
+   * handlePay:
+   * - Llama a la ruta "/api/stripe" para crear la Checkout Session o PaymentIntent (según tu backend).
+   * - En este ejemplo, enviamos lineItems para un Checkout Session; ajusta a tu caso.
+   */
+  async function handlePay(orderId: number, totalPrice: number) {
+    try {
+      const response = await fetch("/api/stripe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lineItems: [
+            {
+              price_data: {
+                currency: "usd",
+                product_data: {
+                  name: `Orden #${orderId}`,
+                },
+                // 1000 = 10.00 USD en centavos, ajusta según tu lógica
+                unit_amount: totalPrice,
+              },
+              // Aquí interpretamos `totalPrice` como la cantidad de ítems;
+              // si más bien querías "monto total en centavos", debes ajustar la lógica.
+              quantity: 2
+            },
+          ],
+        }),
+      });
+
+      const data = await response.json();
+      if (data.error) {
+        console.error("Error al crear PaymentIntent o Checkout Session:", data.error);
+        return;
+      }
+
+      // Dependiendo de si tu backend crea un PaymentIntent o una Checkout Session,
+      // la respuesta será distinta. Ajusta este código a lo que devuelves.
+      if (data.url) {
+        // Por ejemplo, si es una Checkout Session:
+        // Rediriges a la URL de Stripe Checkout:
+        window.location.href = data.url;
+      } else {
+        // O, si es un PaymentIntent, podrías redirigir a tu /checkout/[orderId]
+        // donde usas <CardElement> y confirmas el pago en tu sitio.
+        console.log("PaymentIntent creado:", data.paymentIntentId);
+        console.log("ClientSecret:", data.clientSecret);
+        router.push(`/checkout/${orderId}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Mientras cargan las órdenes, muestra un spinner
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
@@ -52,6 +106,7 @@ function OrdersPage() {
     );
   }
 
+  // Si no hay órdenes, muestra un mensaje
   if (orders.length === 0) {
     return (
       <Container>
@@ -62,6 +117,7 @@ function OrdersPage() {
     );
   }
 
+  // Renderiza la lista de órdenes
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
@@ -81,7 +137,7 @@ function OrdersPage() {
               backgroundColor: "#fff",
             }}
           >
-            {/* Imagen del producto principal */}
+            {/* Imagen del primer producto de la orden */}
             <CardMedia
               component="img"
               image={order.items[0]?.image || "https://via.placeholder.com/100"}
@@ -127,13 +183,13 @@ function OrdersPage() {
                 Total: <strong>${order.totalPrice.toFixed(2)}</strong>
               </Typography>
               <Button
-                variant="outlined"
-                color="primary"
+                variant="contained"
+                color="success"
                 size="small"
                 sx={{ mt: 2 }}
-                onClick={() => router.push(`/orders/${order.id}`)}
+                onClick={() => handlePay(order.id, order.totalPrice)}
               >
-                Ver Detalles
+                Pagar
               </Button>
             </Box>
           </Card>
@@ -143,4 +199,4 @@ function OrdersPage() {
   );
 }
 
-export default withAuth(OrdersPage) 
+export default withAuth(OrdersPage);
