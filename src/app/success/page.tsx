@@ -11,11 +11,13 @@ import {
   Divider,
 } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import axiosInstance from "@/utils/axiosInstance";
 
 export default function SuccessPage() {
   const searchParams = useSearchParams();
-  const sessionId = searchParams.get("session_id"); // Obtén el valor del query param
+  const sessionId = searchParams.get("session_id");
   const [receiptUrl, setReceiptUrl] = useState("");
+  const orderId = searchParams.get("orderId"); 
 
 
 
@@ -28,10 +30,24 @@ export default function SuccessPage() {
           if (data.receiptUrl) {
             setReceiptUrl(data.receiptUrl);
           }
+          
         })
         .catch(console.error);
     }
   }, [sessionId]);
+
+
+  useEffect(() => {
+    if (orderId) {
+    
+      axiosInstance
+        .patch(`/orders/${orderId}/status?orderStatus=COMPLETED`)
+        .then(() => {
+          console.log("Orden actualizada a PAGADA");
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [orderId]);
 
   return (
     <Container maxWidth="sm" sx={{ mt: 6 }}>
@@ -43,7 +59,7 @@ export default function SuccessPage() {
           textAlign: "center",
         }}
       >
-        {/* Ícono grande de éxito */}
+    
         <CheckCircleOutlineIcon
           sx={{ color: "success.main", fontSize: 60, mb: 2 }}
         />
@@ -79,7 +95,7 @@ export default function SuccessPage() {
                 window.open(receiptUrl, "_blank", "noopener,noreferrer");
               }
             }}
-            disabled={!receiptUrl} // Se deshabilita si no hay URL disponible
+            disabled={!receiptUrl}
           >
             Descargar Recibo
           </Button>

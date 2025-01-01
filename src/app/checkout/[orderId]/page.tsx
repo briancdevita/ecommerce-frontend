@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import {
   Box,
@@ -12,20 +12,18 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 
-/**
- * CheckoutPageWrapper
- * En Hosted Checkout NO necesitamos <Elements> ni Stripe.js en el cliente.
- * Solamente llamaremos a nuestra API para obtener la URL de Checkout
- * y redirigir al usuario a la página de Stripe.
- */
 export default function CheckoutPageWrapper() {
   return <CheckoutPage />;
 }
 
 function CheckoutPage() {
-  const { orderId } = useParams();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const cartItems = useSelector((state) => state.cart.items);
+  const orderId = searchParams.get("orderId");
+
 
   // 1. Handler para crear la Checkout Session y redirigir
   async function handleCheckout() {
@@ -47,11 +45,12 @@ function CheckoutPage() {
                   // Puedes agregar imágenes, descripciones, etc.:
                   // images: ["https://mi-cdn.com/imagen-producto.jpg"],
                 },
-                unit_amount: 2000, // 20.00 USD en centavos
+                unit_amount: cartItems.quantity // 20.00 USD en centavos
               },
-              quantity: 1,
+              quantity:cartItems.quantity,
             },
           ],
+          orderId: orderId
         }),
       });
 
@@ -98,7 +97,7 @@ function CheckoutPage() {
             sx={{ p: 2, mb: 2, borderRadius: 2, backgroundColor: "#f9f9f9" }}
           >
             <Typography variant="subtitle2">
-              Monto simulado: <strong>20.00 USD</strong>
+              Monto simulado: <strong>{cartItems.price}</strong>
             </Typography>
           </Paper>
 
