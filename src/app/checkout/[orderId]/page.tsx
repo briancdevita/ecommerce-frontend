@@ -23,7 +23,11 @@ function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const cartItems = useSelector((state) => state.cart.items);
   const orderId = searchParams.get("orderId");
-
+  const productImage = searchParams.get("images");
+  const totalPrice = searchParams.get("totalPrice") // Convertir a número
+  const productName = searchParams.get("productName");
+  console.log(totalPrice)
+ 
 
   // 1. Handler para crear la Checkout Session y redirigir
   async function handleCheckout() {
@@ -41,11 +45,12 @@ function CheckoutPage() {
               price_data: {
                 currency: "usd",
                 product_data: {
-                  name: `Orden #${orderId}`,
+                  name: productName,
+                  images: [productImage],
                   // Puedes agregar imágenes, descripciones, etc.:
                   // images: ["https://mi-cdn.com/imagen-producto.jpg"],
                 },
-                unit_amount: cartItems.quantity // 20.00 USD en centavos
+                unit_amount: totalPrice,
               },
               quantity:cartItems.quantity,
             },
