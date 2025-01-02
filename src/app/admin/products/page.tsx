@@ -126,28 +126,30 @@ const ProductsPage: React.FC = () => {
           mb={2}
         >
           <Typography variant="h4" fontWeight="bold">
-            Gestión de Productos
+          Product Management
+
           </Typography>
           <Button
             variant="contained"
             startIcon={<Plus size={20} />}
             onClick={() => handleOpenModal()}
           >
-            Nuevo Producto
+            New Product
           </Button>
         </Box>
         <TableContainer component={Paper} sx={{ mt: 2 }}>
           <Table>
             <TableHead sx={{ bgcolor: "#f4f6f8" }}>
-              <TableRow>
-                <TableCell>Imagen</TableCell>
-                <TableCell>Nombre</TableCell>
-                <TableCell>Descripción</TableCell>
-                <TableCell>Precio</TableCell>
-                <TableCell>Stock</TableCell>
-                <TableCell>Categoría</TableCell>
-                <TableCell>Acciones</TableCell>
-              </TableRow>
+            <TableRow>
+            <TableCell>Image</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Description</TableCell>
+            <TableCell>Price</TableCell>
+            <TableCell>Stock</TableCell>
+            <TableCell>Category</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+
             </TableHead>
             <TableBody>
               {products.map((product) => (
@@ -216,11 +218,11 @@ const ProductsPage: React.FC = () => {
         {/* Modal para Crear/Editar Producto */}
         <Dialog open={modalOpen} onClose={handleCloseModal}>
           <DialogTitle>
-            {currentProduct ? "Editar Producto" : "Nuevo Producto"}
+            {currentProduct ? "Edit Product" : "New Product"}
           </DialogTitle>
           <DialogContent>
             <TextField
-              label="Nombre"
+              label="Name"
               fullWidth
               margin="normal"
               value={currentProduct?.name || ""}
@@ -232,7 +234,7 @@ const ProductsPage: React.FC = () => {
               }
             />
             <TextField
-              label="Descripción"
+              label="Description"
               fullWidth
               margin="normal"
               value={currentProduct?.description || ""}
@@ -244,7 +246,7 @@ const ProductsPage: React.FC = () => {
               }
             />
             <TextField
-              label="Precio"
+              label="Price"
               fullWidth
               margin="normal"
               type="number"
@@ -270,7 +272,7 @@ const ProductsPage: React.FC = () => {
               }
             />
             <TextField
-              label="Categoría"
+              label="Category"
               fullWidth
               margin="normal"
               value={currentProduct?.category || ""}
@@ -296,10 +298,10 @@ const ProductsPage: React.FC = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseModal} color="secondary">
-              Cancelar
+              Cancel
             </Button>
             <Button onClick={handleSaveProduct} variant="contained">
-              Guardar
+              Save
             </Button>
           </DialogActions>
         </Dialog>

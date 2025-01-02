@@ -19,6 +19,7 @@ import {
   Chip,
 } from "@mui/material";
 import axiosInstance from "@/utils/axiosInstance";
+import DashboardNavbar from "@/components/DashboardNavbar";
 
 interface Order {
   id: number;
@@ -92,18 +93,19 @@ const OrdersPage = () => {
     <AdminLayout>
       <Box>
         <Typography variant="h4" fontWeight="bold" mb={2}>
-          Gestión de Órdenes
+        Order Management
         </Typography>
         <TableContainer component={Paper} sx={{ boxShadow: 3, borderRadius: 2 }}>
           <Table>
             <TableHead sx={{ bgcolor: "#f4f6f8" }}>
               <TableRow>
-                <TableCell># Orden</TableCell>
-                <TableCell>Usuario</TableCell>
-                <TableCell>Fecha</TableCell>
-                <TableCell>Estado</TableCell>
-                <TableCell>Total</TableCell>
-                <TableCell>Acciones</TableCell>
+              <TableCell># Order</TableCell>
+              <TableCell>User</TableCell>
+              <TableCell>Date</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Total</TableCell>
+              <TableCell>Actions</TableCell>
+
               </TableRow>
             </TableHead>
             <TableBody>
@@ -130,9 +132,9 @@ const OrdersPage = () => {
                       size="small"
                       sx={{ ml: 2 }}
                     >
-                      <MenuItem value="PENDING">Pendiente</MenuItem>
-                      <MenuItem value="COMPLETED">Enviado</MenuItem>
-                      <MenuItem value="CANCELLED">Cancelado</MenuItem>
+                      <MenuItem value="PENDING">PENDING</MenuItem>
+                      <MenuItem value="COMPLETED">COMPLETED</MenuItem>
+                      <MenuItem value="CANCELLED">CANCELLED</MenuItem>
                     </Select>
                   </TableCell>
                   <TableCell>
@@ -147,7 +149,8 @@ const OrdersPage = () => {
                       sx={{ textTransform: "none" }}
                       onClick={() => console.log("Descargar factura")}
                     >
-                      Descargar Factura
+                      Download Receipt
+
                     </Button>
                   </TableCell>
                 </TableRow>

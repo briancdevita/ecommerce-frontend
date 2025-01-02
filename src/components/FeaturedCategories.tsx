@@ -4,12 +4,16 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import { Tv, Shirt, Home, Dumbbell } from "lucide-react";
 
-const FeaturedCategories = () => {
+interface FeaturedCategoriesProps {
+  onCategoryClick: (category: string) => void;
+}
+
+const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({ onCategoryClick }) => {
   const categories = [
-    { name: "Electrónica", icon: <Tv size={24} color="#1e293b" /> },
-    { name: "Indumentaria", icon: <Shirt size={24} color="#1e293b" /> },
-    { name: "Hogar", icon: <Home size={24} color="#1e293b" /> },
-    { name: "Deportes", icon: <Dumbbell size={24} color="#1e293b" /> },
+    { name: "Computing", icon: <Tv size={24} color="#1e293b" /> },
+    { name: "Accessories", icon: <Shirt size={24} color="#1e293b" /> },
+    { name: "Tools", icon: <Home size={24} color="#1e293b" /> },
+    { name: "Sports", icon: <Dumbbell size={24} color="#1e293b" /> },
   ];
 
   return (
@@ -32,6 +36,7 @@ const FeaturedCategories = () => {
             transition: "transform 0.2s",
             "&:hover": { transform: "scale(1.05)" },
           }}
+          onClick={() => onCategoryClick(category.name)}
         >
           <Box
             sx={{

@@ -7,18 +7,18 @@ export default function EcommerceBenefits() {
   const benefits = [
     {
       icon: <Truck size={40} color="#38bdf8" />, // Envío gratuito
-      title: "Envío gratuito",
-      description: "Recibe tus productos sin costo adicional en pedidos seleccionados.",
+      title: "Free shipping",
+      description: "Receive your products at no additional cost on selected orders.",
     },
     {
       icon: <Headphones size={40} color="#38bdf8" />, // Soporte 24/7
-      title: "Soporte 24/7",
-      description: "Nuestro equipo está disponible para ayudarte en cualquier momento.",
+      title: "Support 24/7",
+      description: "Our team is available to help you at any time.",
     },
     {
       icon: <ShieldCheck size={40} color="#38bdf8" />, // Garantía de devolución
-      title: "Garantía de devolución",
-      description: "Compra con confianza, devoluciones fáciles y rápidas.",
+      title: "Money back guarantee",
+      description: "Buy with confidence, easy and fast returns.",
     },
   ];
 
@@ -35,7 +35,7 @@ export default function EcommerceBenefits() {
         variant="h5"
         sx={{ fontWeight: "bold", mb: 4, color: "#1e293b" }}
       >
-        Beneficios de comprar con nosotros
+        Benefits of shopping with us
       </Typography>
 
       <Grid container spacing={4} justifyContent="center">
