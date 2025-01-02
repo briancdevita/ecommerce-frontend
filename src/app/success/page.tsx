@@ -37,31 +37,42 @@ export default function SuccessPage() {
   }, [sessionId]);
 
 
+
+
+
   useEffect(() => {
     if (orderId) {
-    
+      const token = localStorage.getItem("token");
+     
       axiosInstance
-        .patch(`/orders/${orderId}/status?orderStatus=COMPLETED`)
+        .patch(
+          `/orders/${orderId}/status?orderStatus=COMPLETED`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Asegúrate de incluir el token
+            },
+          }
+        )
         .then(() => {
-          console.log("Orden actualizada a PAGADA");
+          console.log("Orden actualizada a COMPLETED");
+          if (receiptUrl) {
+            axiosInstance
+              .post(`/orders/${orderId}/receipt`, { receiptUrl })
+              .then(() => {
+                console.log("Receipt URL successfully saved");
+              })
+              .catch((err) => console.error("Error saving receipt URL:", err));
+          }
         })
-        .catch((err) => console.error(err));
+        .catch((err) => console.error("Error updating order status:", err));
     }
-  }, [orderId]);
-
+  }, [orderId, receiptUrl]);
+  
   
 
 
-  useEffect(() => {
-    if (orderId && receiptUrl) {
-      axiosInstance
-        .post(`/orders/${orderId}/receipt`, { receiptUrl })
-        .then(() => {
-          console.log("Receipt URL successfully saved");
-        })
-        .catch((err) => console.error("Error saving receipt URL:", err));
-    }
-  }, [orderId, receiptUrl]);
+  
   
 
 
