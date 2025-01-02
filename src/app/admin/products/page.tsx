@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Swal from 'sweetalert2';
+
 import {
   Box,
   Typography,
@@ -64,42 +66,95 @@ const ProductsPage: React.FC = () => {
     setCurrentProduct(null);
   };
 
+  
   const handleSaveProduct = () => {
-    if (currentProduct?.id) {
-      axiosInstance
-        .put(`/products/${currentProduct.id}`, currentProduct)
-        .then(() => {
-          setProducts((prev) =>
-            prev.map((p) => (p.id === currentProduct.id ? currentProduct : p))
-          );
-          handleCloseModal();
-        })
-        .catch((error) => {
-          console.error("Error updating product:", error);
-        });
-    } else {
-      axiosInstance
-        .post("/products", currentProduct)
-        .then((response) => {
-          setProducts((prev) => [...prev, response.data]);
-          handleCloseModal();
-        })
-        .catch((error) => {
-          console.error("Error creating product:", error);
-        });
-    }
+    // Cerrar el modal antes de mostrar el SweetAlert
+    handleCloseModal();
+  
+    Swal.fire({
+      title: 'Are you sure?',
+      text: currentProduct?.id
+        ? 'Do you want to update this product?'
+        : 'Do you want to create this product?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: currentProduct?.id ? 'Yes, update it!' : 'Yes, create it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (currentProduct?.id) {
+          // Update product
+          axiosInstance
+            .put(`/products/${currentProduct.id}`, currentProduct)
+            .then(() => {
+              setProducts((prev) =>
+                prev.map((p) => (p.id === currentProduct.id ? currentProduct : p))
+              );
+              Swal.fire('Updated!', 'The product has been updated.', 'success');
+            })
+            .catch((error) => {
+              console.error('Error updating product:', error);
+              Swal.fire('Error!', 'There was a problem updating the product.', 'error');
+            });
+        } else {
+          // Create product
+          axiosInstance
+            .post('/products', currentProduct)
+            .then((response) => {
+              setProducts((prev) => [...prev, response.data]);
+              Swal.fire('Created!', 'The product has been created.', 'success');
+            })
+            .catch((error) => {
+              console.error('Error creating product:', error);
+              Swal.fire('Error!', 'There was a problem creating the product.', 'error');
+            });
+        }
+      } else {
+        // Reabrir el modal si la acción fue cancelada
+        handleOpenModal();
+      }
+    });
   };
+  
+  
 
+  
   const handleDeleteProduct = (id: number) => {
-    axiosInstance
-      .delete(`/products/${id}`)
-      .then(() => {
-        setProducts((prev) => prev.filter((p) => p.id !== id));
-      })
-      .catch((error) => {
-        console.error("Error deleting product:", error);
-      });
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Si el usuario confirma la acción, procede con la eliminación
+        axiosInstance
+          .delete(`/products/${id}`)
+          .then(() => {
+            setProducts((prev) => prev.filter((p) => p.id !== id));
+            Swal.fire(
+              'Deleted!',
+              'The product has been deleted.',
+              'success'
+            );
+          })
+          .catch((error) => {
+            console.error('Error deleting product:', error);
+            Swal.fire(
+              'Error!',
+              'There was a problem deleting the product.',
+              'error'
+            );
+          });
+      }
+    });
   };
+  
+
 
   if (loading) {
     return (

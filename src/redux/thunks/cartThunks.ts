@@ -12,7 +12,7 @@ export const fetchCart = () => async (dispatch: AppDispatch) => {
     dispatch(setCart(response.data.items)); // Asume que la respuesta del backend tiene un array `items`
   } catch (error) {
 
-    toast.error("Error al cargar el carrito");
+    toast.error("Error loading cart");
   }
 };
 
@@ -25,10 +25,10 @@ export const addToCart =
         `/cart/add?productId=${product.id}&quantity=${quantity}`
       );
       dispatch(addItem({ product, quantity }));
-      toast.success(`${product.name} agregado al carrito`);
+      toast.success(`${product.name} Added to cart`);
     } catch (error) {
 
-      toast.error("Hubo un problema al agregar el producto al carrito.");
+      toast.error("There was a problem adding the product to the cart.");
     }
   };
 
@@ -37,8 +37,8 @@ export const clearCartThunk = () => async (dispatch: AppDispatch) => {
   try {
     await axiosInstance.delete("/cart/clear");
     dispatch(clearCart());
-    toast.success("Carrito vaciado con éxito");
+    toast.success("Cart successfully emptied");
   } catch (error) {
-    toast.error("Error al vaciar el carrito");
+    toast.error("Error emptying cart");
   }
 };

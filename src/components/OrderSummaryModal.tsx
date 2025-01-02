@@ -34,12 +34,12 @@ export default function OrderSummaryModal({ open, onClose }: OrderSummaryModalPr
           });
    
 
-      toast.success("¡Orden creada exitosamente!");
+      toast.success("Order created successfully!");
       dispatch(clearCart())
       onClose(); // Cierra el modal
       router.push(`/orders/${response.data.id}`); // Redirige a la página de resumen
     } catch (error) {
-      toast.error("Hubo un problema al crear la orden. Intenta nuevamente.");
+      toast.error("There was a problem creating the order. Try again.");
     }
   };
 
