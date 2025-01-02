@@ -53,6 +53,7 @@ function OrdersPage() {
    * - En este ejemplo, enviamos lineItems para un Checkout Session; ajusta a tu caso.
    */
   async function handleOneTimePayment(orderId: number, productName: string, totalPrice: number, productImage: string) {
+    console.log('entre')
     try {
       const response = await fetch('/api/stripe', {
         method: 'POST',
@@ -171,13 +172,14 @@ function OrdersPage() {
               </Typography>
               <Button
   variant="contained"
-  color={order.status === "COMPLETED" ? "warning" : "success"} // Cambia el color según el estado
+  color={order.status === "COMPLETED" ? "warning" : "success"}
   size="small"
   sx={{ mt: 2 }}
   onClick={() => {
     if (order.status === "COMPLETED") {
-      // Lógica para solicitar el reembolso
-      
+      // Lógica para solicitar el reembolso (si la deseas implementar)
+      console.log("Refund logic for order:", order.id);
+    } else {
       // Lógica de pago
       handleOneTimePayment(
         order.id,
@@ -188,9 +190,9 @@ function OrdersPage() {
     }
   }}
 >
-  {order.status === "COMPLETED" ? "Refund" : "Pay"} {/* Cambia el texto según el estado */}
+  {order.status === "COMPLETED" ? "Refund" : "Pay"}
 </Button>
-   
+
 
             </Box>
             <Typography
