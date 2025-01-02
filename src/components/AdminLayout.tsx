@@ -17,12 +17,13 @@ import {
   Typography,
   Divider,
 } from "@mui/material";
-import { Menu, ShoppingCart, Users, Clipboard, Home, LogOut } from "lucide-react";
+import { Menu, ShoppingCart, Users, Clipboard, Home, LogOut, LucideLayoutDashboard } from "lucide-react";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 
 import { logout } from "@/redux/slices/authSlice";
 import { clearCart } from "@/redux/slices/cartSlice";
+import { Dashboard } from "@mui/icons-material";
 
 const drawerWidth = 280;
 
@@ -129,8 +130,28 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             </ListItemIcon>
             <ListItemText primary="Órdenes" />
           </ListItemButton>
+
+          
+        </ListItem>
+
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => router.push("/admin/dashboard")}
+            sx={{
+              "&:hover": { bgcolor: "#334155" },
+            }}
+          >
+            <ListItemIcon>
+              <LucideLayoutDashboard size={20} color="#38bdf8" />
+            </ListItemIcon>
+            <ListItemText primary="Dashboard" />
+          </ListItemButton>
+
+          
         </ListItem>
       </List>
+
+      
 
       <Divider sx={{ bgcolor: "#475569", my: 1 }} />
 
@@ -161,6 +182,8 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ListItemText primary="Salir" />
           </ListItemButton>
         </ListItem>
+
+        
       </List>
     </Box>
   );

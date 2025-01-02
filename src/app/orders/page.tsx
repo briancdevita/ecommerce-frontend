@@ -14,11 +14,13 @@ import {
   Chip,
 } from "@mui/material";
 import withAuth from "@/utils/withAuth";
+import { redirect } from "next/navigation";
 
 interface Order {
   id: number;
   orderDate: string;
   status: string;
+  receiptUrl?: string;
   totalPrice: number;
   items: {
     productName: string;
@@ -38,6 +40,14 @@ const OrdersPage: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
+
+  console.log(orders)
+
+  const handleReceipt = (receipUrl: string) => {
+    redirect(receipUrl)
+  }
+
+
 
   useEffect(() => {
     axiosInstance
@@ -80,9 +90,11 @@ const OrdersPage: React.FC = () => {
         My orders
       </Typography>
 
+
       <Stack spacing={3}>
         {orders.map((order) => (
           <Paper key={order.id} elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+            
             <Box
               display="flex"
               justifyContent="space-between"
@@ -103,6 +115,7 @@ const OrdersPage: React.FC = () => {
                     color="default"
                   />
                 </Stack>
+                
                 <Stack direction="row" spacing={1} mt={1} alignItems="center">
                   <Typography variant="body2" color="text.secondary">
                     Status:
@@ -132,6 +145,7 @@ const OrdersPage: React.FC = () => {
               >
                 {expandedOrder === order.id ? "Hide Details" : "See Details"}
               </Button>
+              
             </Box>
 
             <Collapse in={expandedOrder === order.id} unmountOnExit>
@@ -158,6 +172,7 @@ const OrdersPage: React.FC = () => {
                         borderRadius: 4,
                       }}
                     />
+                    
                     <Box>
                       <Typography variant="body2" fontWeight="medium">
                         {item.productName}
@@ -166,13 +181,27 @@ const OrdersPage: React.FC = () => {
                       Amount: {item.quantity} &bull; Price: ${item.price.toFixed(2)}
                       </Typography>
                     </Box>
+                     <Button
+                     style={{marginLeft: "auto"}}
+                     color="info"
+                     variant="contained"
+                     onClick={() => handleReceipt(order.receiptUrl)}
+                    >
+                      See receipt
+
+                    </Button>
                   </Box>
+                  
                 ))}
               </Box>
+                
             </Collapse>
+            
           </Paper>
+          
         ))}
       </Stack>
+      
     </Container>
   );
 };
