@@ -49,6 +49,22 @@ export default function SuccessPage() {
     }
   }, [orderId]);
 
+  
+
+
+  useEffect(() => {
+    if (orderId && receiptUrl) {
+      axiosInstance
+        .post(`/orders/${orderId}/receipt`, { receiptUrl })
+        .then(() => {
+          console.log("Receipt URL successfully saved");
+        })
+        .catch((err) => console.error("Error saving receipt URL:", err));
+    }
+  }, [orderId, receiptUrl]);
+  
+
+
   return (
     <Container maxWidth="sm" sx={{ mt: 6 }}>
       <Paper

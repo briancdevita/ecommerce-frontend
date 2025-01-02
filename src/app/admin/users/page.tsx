@@ -24,6 +24,7 @@ import {
 import { useEffect, useState } from "react";
 import axiosInstance from "@/utils/axiosInstance";
 import { Edit2, Trash } from "lucide-react"; // Lucide icons para un diseño moderno.
+import Swal from "sweetalert2";
 
 interface User {
   id: number;
@@ -62,23 +63,36 @@ export default function UsersPage() {
   };
 
   const handleDelete = (userId: number) => {
-    if (confirm("¿Estás seguro de eliminar este usuario? Esta acción no se puede deshacer.")) {
-      axiosInstance
-        .delete(`/admin/user/${userId}`)
-        .then(() => {
-          alert("Usuario eliminado con éxito");
-          fetchUsers();
-        })
-        .catch((error) => {
-          console.error("Error deleting user:", error);
-          alert("Hubo un problema al intentar eliminar al usuario.");
-        });
-    }
+    // Mostrar diálogo de confirmación con SweetAlert
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Usuario confirma eliminar
+        axiosInstance
+          .delete(`/admin/user/${userId}`)
+          .then(() => {
+            Swal.fire('Deleted!', 'The user has been successfully deleted.', 'success');
+            fetchUsers(); // Actualizar la lista de usuarios
+          })
+          .catch((error) => {
+            console.error('Error deleting user:', error);
+            Swal.fire('Error!', 'There was a problem deleting the user.', 'error');
+          });
+      }
+    });
   };
 
   const handleSave = () => {
     if (!editingUser) return;
-
+  
     axiosInstance
       .put(`/admin/user/${editingUser.id}`, {
         username: editingUser.username,
@@ -86,15 +100,28 @@ export default function UsersPage() {
         roles: editingUser.roles.map((role) => role.name),
       })
       .then(() => {
-        alert("Usuario actualizado con éxito");
-        setOpenEditDialog(false);
-        fetchUsers();
+        // Mostrar mensaje de éxito con SweetAlert
+        Swal.fire({
+          title: 'Success!',
+          text: 'The user has been successfully updated.',
+          icon: 'success',
+          confirmButtonColor: '#3085d6',
+        });
+        setOpenEditDialog(false); // Cerrar el diálogo de edición
+        fetchUsers(); // Actualizar la lista de usuarios
       })
       .catch((error) => {
-        console.error("Error updating user:", error);
-        alert("Hubo un problema al intentar actualizar al usuario.");
+        console.error('Error updating user:', error);
+        // Mostrar mensaje de error con SweetAlert
+        Swal.fire({
+          title: 'Error!',
+          text: 'There was a problem updating the user.',
+          icon: 'error',
+          confirmButtonColor: '#d33',
+        });
       });
   };
+  
 
   if (loading) {
     return (

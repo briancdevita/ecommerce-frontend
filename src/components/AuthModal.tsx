@@ -61,13 +61,13 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
       }
     } catch (error: any) {
   
-      toast.error("Hubo un error");
+      toast.error("There was an error");
     }
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{isLogin ? "Iniciar Sesión" : "Registrarse"}</DialogTitle>
+      <DialogTitle>{isLogin ? "Login" : "Register"}</DialogTitle>
       <DialogContent>
         <Tabs
           value={isLogin ? 0 : 1}
@@ -112,7 +112,7 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
             fullWidth
             sx={{ mt: 2 }}
           >
-            {isLogin ? "Login" : "Registrar"}
+            {isLogin ? "Login" : "Register"}
           </Button>
         </Box>
       </DialogContent>

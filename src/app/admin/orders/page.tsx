@@ -19,7 +19,8 @@ import {
   Chip,
 } from "@mui/material";
 import axiosInstance from "@/utils/axiosInstance";
-import DashboardNavbar from "@/components/DashboardNavbar";
+
+import { redirect } from "next/navigation";
 
 interface Order {
   id: number;
@@ -27,11 +28,18 @@ interface Order {
   orderDate: string;
   status: string;
   totalPrice: number;
+  receiptUrl?: string;
 }
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  console.log(orders)
+
+  const handleReceipt = (receipUrl: string) => {
+    redirect(receipUrl);
+  }
+  
 
   useEffect(() => {
     axiosInstance
@@ -147,7 +155,7 @@ const OrdersPage = () => {
                       variant="outlined"
                       size="small"
                       sx={{ textTransform: "none" }}
-                      onClick={() => console.log("Descargar factura")}
+                      onClick={() => handleReceipt(order.receiptUrl)}
                     >
                       Download Receipt
 

@@ -8,9 +8,9 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import DashboardIcon from "@mui/icons-material/Dashboard";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import Link from "next/link";
-import { Badge } from "@mui/material";
+import { Badge, Divider, Menu, MenuItem } from "@mui/material";
 import { useCartDrawer } from "@/app/context/CartDrawerContext";
 import AuthModal from "./AuthModal";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -32,6 +32,7 @@ const Navbar = () => {
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleOpenAuthModal = () => setAuthModalOpen(true);
   const handleCloseAuthModal = () => setAuthModalOpen(false);
@@ -40,6 +41,15 @@ const Navbar = () => {
     dispatch(logout()); // Actualiza el estado global
     localStorage.removeItem("token"); // Limpia el token almacenado
     dispatch(clearCart());
+    handleMenuClose();
+  };
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   // Banner promocional dinámico
@@ -63,16 +73,11 @@ const Navbar = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-   
       <AppBar position="static">
- 
         <Toolbar>
           {/* Título y enlace a la página principal */}
           <Typography variant="h6" sx={{ flexGrow: 1, color: "white" }}>
-            <Link
-              href="/"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
+            <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
               E-Commerce
             </Link>
           </Typography>
@@ -90,49 +95,65 @@ const Navbar = () => {
           >
             {promotion}
           </Typography>
-       
 
           {/* Botón del carrito */}
           <IconButton color="inherit" onClick={openDrawer}>
             <Badge badgeContent={totalItems} color="error">
-              <ShoppingCartIcon />
+              <ShoppingCartIcon sx={{ fontSize: "1.8rem" }} />
             </Badge>
           </IconButton>
-         
 
-          {/* Mostrar dependiendo del estado del usuario */}
+          {/* Menú desplegable para el usuario */}
           {user ? (
             <>
-              <Box display="flex" alignItems="center" gap={2}>
-                {/* Ícono de Dashboard solo si el usuario es ADMIN */}
+              <IconButton
+                color="inherit"
+                onClick={handleMenuOpen}
+                sx={{ ml: 2 }}
+              >
+                <AccountCircleIcon sx={{ fontSize: "1.8rem", color: "white" }} />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+                PaperProps={{
+                  sx: { mt: 2, bgcolor: "#1e293b", color: "#e2e8f0" },
+                }}
+              >
+                <MenuItem onClick={handleMenuClose}>
+                  <Link
+                    href="/profile"
+                    style={{
+                      textDecoration: "none",
+                      color: "inherit",
+                      width: "100%",
+                    }}
+                  >
+                    Profile
+                  </Link>
+                </MenuItem>
                 {user.roles.includes("ADMIN") && (
-                  <IconButton color="inherit">
+                  <MenuItem onClick={handleMenuClose}>
                     <Link
                       href="/admin/orders"
                       style={{
                         textDecoration: "none",
                         color: "inherit",
+                        width: "100%",
                       }}
                     >
-                      <DashboardIcon sx={{ color: "white" }} />
+                      Admin Panel
                     </Link>
-                  </IconButton>
+                  </MenuItem>
                 )}
-
-                <Button color="inherit" onClick={handleLogout}>
-                  <LogoutIcon />
-                </Button>
-              </Box>
-
-              <IconButton color="inherit">
-                <Link href="/profile">
-                  <AccountCircleIcon sx={{ color: "white" }} />
-                </Link>
-              </IconButton>
+                <Divider sx={{ bgcolor: "#475569" }} />
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
             </>
           ) : (
             <Button color="inherit" onClick={handleOpenAuthModal}>
-              <LoginIcon />
+              <LoginIcon sx={{ fontSize: "1.5rem" }} />
             </Button>
           )}
         </Toolbar>
@@ -140,7 +161,6 @@ const Navbar = () => {
         {/* Modal de autenticación */}
         <AuthModal open={isAuthModalOpen} onClose={handleCloseAuthModal} />
       </AppBar>
-
     </Box>
   );
 };
