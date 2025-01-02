@@ -45,7 +45,7 @@ export default function OrderSummaryModal({ open, onClose }: OrderSummaryModalPr
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Resumen de la Orden</DialogTitle>
+      <DialogTitle>Order Summary</DialogTitle>
       <DialogContent>
         <Box>
           {cartItems.map((item) => (
@@ -56,9 +56,9 @@ export default function OrderSummaryModal({ open, onClose }: OrderSummaryModalPr
           ))}
           <Typography variant="h6" mt={2}>Total: ${total.toFixed(2)}</Typography>
           <Box display="flex" justifyContent="space-between" mt={4} gap={2} >
-            <Button variant="outlined" onClick={onClose} >Cancelar</Button>
+            <Button variant="outlined" onClick={onClose} >Cancel</Button>
             
-            <Button variant="contained"  color="primary" onClick={handleConfirmOrder}>Confirmar</Button>
+            <Button variant="contained"  color="primary" onClick={handleConfirmOrder}>Confirm</Button>
           </Box>
         </Box>
       </DialogContent>

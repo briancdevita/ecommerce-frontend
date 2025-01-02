@@ -128,7 +128,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             fontWeight: "bold",
           }}
         >
-          Ver detalles
+          See details
         </Button>
       </Box>
     </Box>

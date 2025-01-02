@@ -20,7 +20,7 @@ import {
 import { Menu, ShoppingCart, Users, Clipboard, Home, LogOut } from "lucide-react";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { log } from "console";
+
 import { logout } from "@/redux/slices/authSlice";
 import { clearCart } from "@/redux/slices/cartSlice";
 
@@ -168,6 +168,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <Box sx={{ display: "flex", bgcolor: "#f4f6f8" }}>
       <CssBaseline />
+      
       <AppBar
         position="fixed"
         sx={{

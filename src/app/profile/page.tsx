@@ -44,7 +44,7 @@ const ProfilePage: React.FC = () => {
           sx={{ mt: 3 }}
           onClick={() => router.push("/orders")}
         >
-          Mis Pedidos
+          My orders
         </Button>
       </Paper>
     </Container>

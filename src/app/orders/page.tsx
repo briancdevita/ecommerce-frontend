@@ -77,7 +77,7 @@ const OrdersPage: React.FC = () => {
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Mis Órdenes
+        My orders
       </Typography>
 
       <Stack spacing={3}>
@@ -91,11 +91,11 @@ const OrdersPage: React.FC = () => {
             >
               <Box mb={{ xs: 2, md: 0 }}>
                 <Typography variant="h6" fontWeight="bold">
-                  Orden #{order.id}
+                  Order #{order.id}
                 </Typography>
                 <Stack direction="row" spacing={1} mt={1} alignItems="center">
                   <Typography variant="body2" color="text.secondary">
-                    Fecha:
+                    Date:
                   </Typography>
                   <Chip
                     label={new Date(order.orderDate).toLocaleDateString()}
@@ -105,7 +105,7 @@ const OrdersPage: React.FC = () => {
                 </Stack>
                 <Stack direction="row" spacing={1} mt={1} alignItems="center">
                   <Typography variant="body2" color="text.secondary">
-                    Estado:
+                    Status:
                   </Typography>
                   <Chip
                     label={order.status}
@@ -130,14 +130,14 @@ const OrdersPage: React.FC = () => {
                 onClick={() => toggleExpand(order.id)}
                 sx={{ whiteSpace: "nowrap" }}
               >
-                {expandedOrder === order.id ? "Ocultar Detalles" : "Ver Detalles"}
+                {expandedOrder === order.id ? "Hide Details" : "See Details"}
               </Button>
             </Box>
 
             <Collapse in={expandedOrder === order.id} unmountOnExit>
               <Box mt={2}>
                 <Typography variant="subtitle1" fontWeight="bold" mb={1}>
-                  Detalles de la Orden
+                Order Details
                 </Typography>
                 {order.items.map((item, index) => (
                   <Box
@@ -163,7 +163,7 @@ const OrdersPage: React.FC = () => {
                         {item.productName}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Cantidad: {item.quantity} &bull; Precio: ${item.price.toFixed(2)}
+                      Amount: {item.quantity} &bull; Price: ${item.price.toFixed(2)}
                       </Typography>
                     </Box>
                   </Box>

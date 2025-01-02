@@ -11,24 +11,21 @@ import {
   CircularProgress,
   Container,
   TextField,
+  Grid,
+  Divider,
+  Rating,
 } from "@mui/material";
-
-
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/redux/thunks/cartThunks";
 
-
 const ProductDetail: React.FC = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const dispatch = useDispatch();
-
-
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
-
 
   useEffect(() => {
     if (id) {
@@ -38,7 +35,7 @@ const ProductDetail: React.FC = () => {
           setProduct(response.data);
           setLoading(false);
         })
-        .catch((err) => {
+        .catch(() => {
           setError("Error fetching product details");
           setLoading(false);
         });
@@ -65,53 +62,91 @@ const ProductDetail: React.FC = () => {
     );
   }
 
- 
-
   return (
-    <Container>
-      <Box display="flex" flexDirection="row" mt={4}>
-        <Box flex="1" mr={4}>
-          {product.image ? (
-            <img
-              src={product.image}
-              alt={product.name}
-              style={{ width: "100%", borderRadius: "8px" }}
-            />
-          ) : (
-            <Typography>No image available</Typography>
-          )}
-        </Box>
-        <Box flex="2" display="flex" flexDirection="column">
-          <Typography variant="h4" mb={2}>
+    <Container sx={{ mt: 4 }}>
+      <Grid container spacing={4}>
+        {/* Image Section */}
+        <Grid item xs={12} md={6}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              bgcolor: "#ffffff",
+              borderRadius: "8px",
+              p: 3,
+              boxShadow: 2,
+            }}
+          >
+            {product.image ? (
+              <img
+                src={product.image}
+                alt={product.name}
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "400px",
+                  borderRadius: "8px",
+                  objectFit: "contain",
+                }}
+              />
+            ) : (
+              <Typography>No image available</Typography>
+            )}
+          </Box>
+        </Grid>
+
+        {/* Details Section */}
+        <Grid item xs={12} md={6}>
+          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
             {product.name}
           </Typography>
-          <Typography variant="body1" color="textSecondary" mb={2}>
+          <Rating value={4.5} precision={0.5} readOnly sx={{ mb: 1 }} />
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{ mb: 3, fontSize: "1rem", lineHeight: 1.5 }}
+          >
             {product.description}
           </Typography>
-          <Typography variant="h5" mb={2}>
-            Price: ${product.price}
+          <Divider sx={{ my: 2 }} />
+          <Typography
+            variant="h5"
+            sx={{ color: "primary.main", fontWeight: "bold", mb: 2 }}
+          >
+            ${product.price.toFixed(2)}
           </Typography>
-          <Typography variant="body1" mb={2}>
+          <Typography variant="body2" sx={{ color: "text.secondary", mb: 2 }}>
             Category: {product.category}
           </Typography>
-          <TextField
-            type="number"
-            label="Quantity"
-            variant="outlined"
-            value={quantity}
-            onChange={(e) => setQuantity(parseInt(e.target.value))}
-            inputProps={{ min: 1 }}
-            sx={{ width: "100px", mb: 2 }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => dispatch(addToCart(product, quantity))}
-          >
-            Add to Cart
-          </Button>
-        </Box>
-      </Box>
+
+          {/* Add to Cart Section */}
+          <Box display="flex" alignItems="center" gap={2} mb={3}>
+            <TextField
+              type="number"
+              label="Quantity"
+              variant="outlined"
+              value={quantity}
+              onChange={(e) => setQuantity(parseInt(e.target.value))}
+              inputProps={{ min: 1 }}
+              sx={{ width: "100px" }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              sx={{ textTransform: "none", fontWeight: "bold" }}
+              onClick={() => dispatch(addToCart(product, quantity))}
+            >
+              Add to Cart
+            </Button>
+          </Box>
+
+          {/* Additional Info */}
+          <Typography variant="body2" color="text.secondary">
+            Free shipping on orders over $50. Secure payments guaranteed.
+          </Typography>
+        </Grid>
+      </Grid>
     </Container>
   );
 };

@@ -9,7 +9,6 @@ import { Product } from "@/types/product";
 import { Box } from "@mui/material";
 import { useRouter } from "next/navigation";
 
-
 interface ProductCarouselProps {
   products: Product[];
 }
@@ -23,7 +22,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
 
   const settings = {
     dots: true, // Mostrar puntos de navegación
-    infinite: true, // Repetir al final
+    infinite: false, // No repetir al final
     speed: 500, // Velocidad de transición
     slidesToShow: 4, // Mostrar 4 productos por fila
     slidesToScroll: 1, // Deslizar de uno en uno
@@ -54,7 +53,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
       <Slider {...settings}>
         {products.map((product) => (
           <Box key={product.id} sx={{ px: 1 }} onClick={() => handleProductClick(product.id)}>
-            <ProductCard product={product}/>
+            <ProductCard product={product} />
           </Box>
         ))}
       </Slider>

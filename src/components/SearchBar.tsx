@@ -1,36 +1,57 @@
-"use client";
+import React, { useState } from "react";
+import { Box, Paper, InputBase, IconButton } from "@mui/material";
+import Search from "@mui/icons-material/Search";
 
-import React from "react";
-import { Box, TextField, IconButton } from "@mui/material";
-import { Search } from "lucide-react";
+interface SearchBarProps {
+  onSearch: (searchTerm: string) => void;
+}
 
-const SearchBar = () => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = () => {
+    onSearch(searchTerm);
+  };
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        my: 3,
-      }}
-    >
-      <TextField
-        variant="outlined"
-        placeholder="Buscar productos..."
-        size="small"
+    <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
+      <Paper
+        component="form"
         sx={{
-          width: "50%",
-          bgcolor: "#fff",
-          borderRadius: 2,
+          p: "2px 4px",
+          display: "flex",
+          alignItems: "center",
+          width: 400,
         }}
-        InputProps={{
-          endAdornment: (
-            <IconButton>
-              <Search />
-            </IconButton>
-          ),
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSearch();
         }}
-      />
+      >
+        <InputBase
+          sx={{ ml: 1, flex: 1 }}
+          placeholder="Buscar productos"
+          inputProps={{ "aria-label": "buscar productos" }}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            color: "#333",
+            bgcolor: "#f8f9fa",
+          }}
+        />
+        <IconButton
+          onClick={handleSearch}
+          sx={{
+            p: "10px",
+            color: "#38bdf8",
+            "&:hover": {
+              bgcolor: "#e0f2fe",
+            },
+          }}
+        >
+          <Search />
+        </IconButton>
+      </Paper>
     </Box>
   );
 };

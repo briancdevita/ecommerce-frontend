@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { logout } from "../redux/slices/authSlice";
 import { clearCart } from "@/redux/slices/cartSlice";
+import PromotionalBanner from "./PromotionalBanner";
 
 const Navbar = () => {
   const { openDrawer } = useCartDrawer();
@@ -41,16 +42,55 @@ const Navbar = () => {
     dispatch(clearCart());
   };
 
+  // Banner promocional dinámico
+  const [promotion, setPromotion] = useState(
+    "🎉 Free shipping on purchases over $50 🎉"
+  );
+  const promotions = [
+    "🎉 Free shipping on purchases over $50 🎉",
+    "🛍️ 10% discount on your first purchase 🛍️",
+    "🔥 Exclusive offer: 2x1 on selected products 🔥",
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPromotion((prev) =>
+        promotions[(promotions.indexOf(prev) + 1) % promotions.length]
+      );
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
+   
       <AppBar position="static">
+ 
         <Toolbar>
           {/* Título y enlace a la página principal */}
           <Typography variant="h6" sx={{ flexGrow: 1, color: "white" }}>
-            <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              href="/"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               E-Commerce
             </Link>
           </Typography>
+
+          {/* Banner promocional dinámico */}
+          <Typography
+            variant="body1"
+            sx={{
+              flexGrow: 600,
+              textAlign: "center",
+              color: "#ffeb3b",
+              fontWeight: "bold",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {promotion}
+          </Typography>
+       
 
           {/* Botón del carrito */}
           <IconButton color="inherit" onClick={openDrawer}>
@@ -58,6 +98,7 @@ const Navbar = () => {
               <ShoppingCartIcon />
             </Badge>
           </IconButton>
+         
 
           {/* Mostrar dependiendo del estado del usuario */}
           {user ? (
@@ -66,7 +107,13 @@ const Navbar = () => {
                 {/* Ícono de Dashboard solo si el usuario es ADMIN */}
                 {user.roles.includes("ADMIN") && (
                   <IconButton color="inherit">
-                    <Link href="/admin/orders" style={{ textDecoration: "none", color: "inherit" }}>
+                    <Link
+                      href="/admin/orders"
+                      style={{
+                        textDecoration: "none",
+                        color: "inherit",
+                      }}
+                    >
                       <DashboardIcon sx={{ color: "white" }} />
                     </Link>
                   </IconButton>
@@ -93,6 +140,7 @@ const Navbar = () => {
         {/* Modal de autenticación */}
         <AuthModal open={isAuthModalOpen} onClose={handleCloseAuthModal} />
       </AppBar>
+
     </Box>
   );
 };

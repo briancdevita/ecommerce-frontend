@@ -108,7 +108,7 @@ function OrdersPage() {
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Mis Órdenes
+        My orders
       </Typography>
       <Box>
         {orders.map((order) => (
@@ -141,10 +141,10 @@ function OrdersPage() {
             {/* Detalles de la orden */}
             <Box sx={{ flex: 1 }}>
               <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                Orden #{order.id}
+                Order #{order.id}
               </Typography>
               <Typography variant="body2" color="textSecondary">
-                Fecha: {new Date(order.orderDate).toLocaleDateString()}
+                Date: {new Date(order.orderDate).toLocaleDateString()}
               </Typography>
               <Typography
                 sx={{
@@ -170,15 +170,45 @@ function OrdersPage() {
                 Total: <strong>${order.totalPrice.toFixed(2)}</strong>
               </Typography>
               <Button
-                variant="contained"
-                color="success"
-                size="small"
-                sx={{ mt: 2 }}
-                onClick={() => handleOneTimePayment(order.id, order.items[0]?.productName, order.totalPrice, order.items[0]?.image)}
-              >
-                Pagar
-              </Button>
+  variant="contained"
+  color={order.status === "COMPLETED" ? "warning" : "success"} // Cambia el color según el estado
+  size="small"
+  sx={{ mt: 2 }}
+  onClick={() => {
+    if (order.status === "COMPLETED") {
+      // Lógica para solicitar el reembolso
+      
+      // Lógica de pago
+      handleOneTimePayment(
+        order.id,
+        order.items[0]?.productName,
+        order.totalPrice,
+        order.items[0]?.image
+      );
+    }
+  }}
+>
+  {order.status === "COMPLETED" ? "Refund" : "Pay"} {/* Cambia el texto según el estado */}
+</Button>
+   
+
             </Box>
+            <Typography
+        variant="body2"
+        sx={{
+          backgroundColor: "#E3F2FD",
+          color: "#0D47A1",
+          fontWeight: "bold",
+          fontSize: "0.9rem",
+          borderRadius: 1,
+          p: "1px 12px",
+          display: "inline-block",
+          mt: 1,
+          ml: 5
+        }}
+      >
+        Info: <strong>15-day warranty included</strong>
+      </Typography>
           </Card>
         ))}
       </Box>

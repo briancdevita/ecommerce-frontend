@@ -115,16 +115,16 @@ export default function UsersPage() {
     <AdminLayout>
       <Box>
         <Typography variant="h4" fontWeight="bold" mb={3}>
-          Gestión de Usuarios
+        User Management
         </Typography>
         <TableContainer component={Paper} sx={{ boxShadow: 3, borderRadius: 2 }}>
           <Table>
             <TableHead sx={{ bgcolor: "#f4f6f8" }}>
               <TableRow>
-                <TableCell>Usuario</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Roles</TableCell>
-                <TableCell>Acciones</TableCell>
+              <TableCell>User</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Roles</TableCell>
+              <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -168,10 +168,10 @@ export default function UsersPage() {
 
       {/* Modal para Editar Usuario */}
       <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
-        <DialogTitle>Editar Usuario</DialogTitle>
+        <DialogTitle>Edit User</DialogTitle>
         <DialogContent>
           <TextField
-            label="Usuario"
+            label="User"
             fullWidth
             margin="normal"
             value={editingUser?.username || ""}
@@ -212,9 +212,9 @@ export default function UsersPage() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenEditDialog(false)}>Cancelar</Button>
+          <Button onClick={() => setOpenEditDialog(false)}>Cancel</Button>
           <Button variant="contained" color="primary" onClick={handleSave}>
-            Guardar
+            Save
           </Button>
         </DialogActions>
       </Dialog>
