@@ -60,7 +60,7 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
         setIsLogin(true);
       }
     } catch (error: any) {
-      console.error(error.response?.data || error.message);
+  
       toast.error("Hubo un error");
     }
   };

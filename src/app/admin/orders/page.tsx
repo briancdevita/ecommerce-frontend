@@ -32,6 +32,7 @@ const OrdersPage = () => {
   const [loading, setLoading] = useState(true);
 
 
+
   useEffect(() => {
     axiosInstance
       .get("/orders/admin/filters")
@@ -40,7 +41,6 @@ const OrdersPage = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching orders:", error);
         setLoading(false);
       });
   }, []);

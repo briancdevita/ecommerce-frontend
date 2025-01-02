@@ -32,14 +32,13 @@ export default function OrderSummaryModal({ open, onClose }: OrderSummaryModalPr
               Authorization: `Bearer ${localStorage.getItem("token")}`, // Envía el token
             },
           });
-          console.log("Order created:", response.data);
+   
 
       toast.success("¡Orden creada exitosamente!");
       dispatch(clearCart())
       onClose(); // Cierra el modal
       router.push(`/orders/${response.data.id}`); // Redirige a la página de resumen
     } catch (error) {
-      console.error("Error creating order:", error.response?.data || error.message);
       toast.error("Hubo un problema al crear la orden. Intenta nuevamente.");
     }
   };

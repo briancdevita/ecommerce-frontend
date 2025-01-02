@@ -12,8 +12,9 @@ import {
   Button,
   Divider,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
+
 import withAuth from "@/utils/withAuth";
+import { useSelector } from "react-redux";
 
 interface Order {
   id: number;
@@ -29,7 +30,9 @@ interface Order {
 function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  const cartItems = useSelector((state) => state.cart.items);
+
+
 
   useEffect(() => {
     axiosInstance
@@ -44,6 +47,34 @@ function OrdersPage() {
       });
   }, []);
 
+  /** 
+   * handlePay:
+   * - Llama a la ruta "/api/stripe" para crear la Checkout Session o PaymentIntent (según tu backend).
+   * - En este ejemplo, enviamos lineItems para un Checkout Session; ajusta a tu caso.
+   */
+  async function handleOneTimePayment(orderId: number) {
+    try {
+      const response = await fetch('/api/stripe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          modeType: 'payment',
+          lineItems: [
+            { price_data: { currency: 'usd', product_data: { name: 'Test' }, unit_amount: 5000 }, quantity: 1 },
+          ],
+          orderId: orderId
+        }),
+      });
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+  // Mientras cargan las órdenes, muestra un spinner
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
@@ -52,6 +83,7 @@ function OrdersPage() {
     );
   }
 
+  // Si no hay órdenes, muestra un mensaje
   if (orders.length === 0) {
     return (
       <Container>
@@ -62,6 +94,7 @@ function OrdersPage() {
     );
   }
 
+  // Renderiza la lista de órdenes
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
@@ -81,7 +114,7 @@ function OrdersPage() {
               backgroundColor: "#fff",
             }}
           >
-            {/* Imagen del producto principal */}
+            {/* Imagen del primer producto de la orden */}
             <CardMedia
               component="img"
               image={order.items[0]?.image || "https://via.placeholder.com/100"}
@@ -127,13 +160,13 @@ function OrdersPage() {
                 Total: <strong>${order.totalPrice.toFixed(2)}</strong>
               </Typography>
               <Button
-                variant="outlined"
-                color="primary"
+                variant="contained"
+                color="success"
                 size="small"
                 sx={{ mt: 2 }}
-                onClick={() => router.push(`/orders/${order.id}`)}
+                onClick={() => handleOneTimePayment(order.id)}
               >
-                Ver Detalles
+                Pagar
               </Button>
             </Box>
           </Card>
@@ -143,4 +176,4 @@ function OrdersPage() {
   );
 }
 
-export default withAuth(OrdersPage) 
+export default withAuth(OrdersPage);
