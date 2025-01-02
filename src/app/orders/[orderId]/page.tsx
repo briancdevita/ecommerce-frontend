@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 
 import withAuth from "@/utils/withAuth";
-import { useSelector } from "react-redux";
+
 
 interface Order {
   id: number;
@@ -30,7 +30,7 @@ interface Order {
 function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const cartItems = useSelector((state) => state.cart.items);
+
 
 
 
@@ -52,7 +52,7 @@ function OrdersPage() {
    * - Llama a la ruta "/api/stripe" para crear la Checkout Session o PaymentIntent (según tu backend).
    * - En este ejemplo, enviamos lineItems para un Checkout Session; ajusta a tu caso.
    */
-  async function handleOneTimePayment(orderId: number) {
+  async function handleOneTimePayment(orderId: number, productName: string, totalPrice: number, productImage: string) {
     try {
       const response = await fetch('/api/stripe', {
         method: 'POST',
@@ -60,9 +60,19 @@ function OrdersPage() {
         body: JSON.stringify({
           modeType: 'payment',
           lineItems: [
-            { price_data: { currency: 'usd', product_data: { name: 'Test' }, unit_amount: 5000 }, quantity: 1 },
+            {
+              price_data: {
+                currency: 'usd',
+                product_data: {
+                  name: productName, // Nombre del producto
+                  images: [productImage], // Aquí va la URL de la imagen
+                },
+                unit_amount: Math.round(totalPrice * 100)// Precio en centavos
+              },
+              quantity: 1, // Cantidad de productos
+            }
           ],
-          orderId: orderId
+          orderId: orderId,
         }),
       });
       const data = await response.json();
@@ -164,7 +174,7 @@ function OrdersPage() {
                 color="success"
                 size="small"
                 sx={{ mt: 2 }}
-                onClick={() => handleOneTimePayment(order.id)}
+                onClick={() => handleOneTimePayment(order.id, order.items[0]?.productName, order.totalPrice, order.items[0]?.image)}
               >
                 Pagar
               </Button>

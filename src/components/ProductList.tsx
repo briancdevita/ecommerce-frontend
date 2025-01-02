@@ -4,7 +4,7 @@ import React from "react";
 import ProductCard from "./ProductCard";
 import { Box } from "@mui/material";
 import { Product } from "@/types/product";
-import { useRouter } from "next/navigation";
+
 
 
 interface ProductListProps {
@@ -12,12 +12,10 @@ interface ProductListProps {
 }
 
 const ProductList: React.FC<ProductListProps> = ({ products }) => {
-  const router = useRouter();
 
 
-  const handleProductClick = (id: number) => {
-    router.push(`/products/${id}`);
-  };
+
+
   return (
     <Box
       sx={{
@@ -31,7 +29,6 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
         <ProductCard 
         key={product.id} 
         product={product}
-        onClick={() => handleProductClick(product.id)} 
         />
       ))}
     </Box>

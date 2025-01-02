@@ -7,10 +7,11 @@ import {
   Typography,
   CircularProgress,
   Box,
-  Grid,
   Paper,
   Button,
   Collapse,
+  Stack,
+  Chip,
 } from "@mui/material";
 import withAuth from "@/utils/withAuth";
 
@@ -26,6 +27,12 @@ interface Order {
     image?: string;
   }[];
 }
+
+const statusColors: Record<string, string> = {
+  PENDING: "warning",
+  COMPLETED: "success",
+  CANCELLED: "error",
+};
 
 const OrdersPage: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -68,51 +75,104 @@ const OrdersPage: React.FC = () => {
   }
 
   return (
-    <Container>
+    <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
         Mis Órdenes
       </Typography>
-      <Grid container spacing={3}>
+
+      <Stack spacing={3}>
         {orders.map((order) => (
-          <Grid item xs={12} key={order.id}>
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Box>
-                  <Typography variant="h6">Orden #{order.id}</Typography>
-                  <Typography variant="body2">
-                    Fecha: {new Date(order.orderDate).toLocaleDateString()}
+          <Paper key={order.id} elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              flexWrap="wrap"
+              alignItems="center"
+            >
+              <Box mb={{ xs: 2, md: 0 }}>
+                <Typography variant="h6" fontWeight="bold">
+                  Orden #{order.id}
+                </Typography>
+                <Stack direction="row" spacing={1} mt={1} alignItems="center">
+                  <Typography variant="body2" color="text.secondary">
+                    Fecha:
                   </Typography>
-                  <Typography variant="body2">Estado: {order.status}</Typography>
-                  <Typography variant="body2">
-                    Total: ${order.totalPrice.toFixed(2)}
+                  <Chip
+                    label={new Date(order.orderDate).toLocaleDateString()}
+                    size="small"
+                    color="default"
+                  />
+                </Stack>
+                <Stack direction="row" spacing={1} mt={1} alignItems="center">
+                  <Typography variant="body2" color="text.secondary">
+                    Estado:
                   </Typography>
-                </Box>
-                <Button onClick={() => toggleExpand(order.id)}>
-                  {expandedOrder === order.id ? "Ocultar Detalles" : "Ver Detalles"}
-                </Button>
+                  <Chip
+                    label={order.status}
+                    size="small"
+                    color={statusColors[order.status] || "default"}
+                  />
+                </Stack>
+                <Stack direction="row" spacing={1} mt={1} alignItems="center">
+                  <Typography variant="body2" color="text.secondary">
+                    Total:
+                  </Typography>
+                  <Chip
+                    label={`$${order.totalPrice.toFixed(2)}`}
+                    size="small"
+                    color="primary"
+                  />
+                </Stack>
               </Box>
 
-              <Collapse in={expandedOrder === order.id}>
-                <Box mt={2}>
-                  <Typography variant="h6">Detalles de la Orden</Typography>
-                  {order.items.map((item, index) => (
-                    <Box key={index} display="flex" alignItems="center" mt={1}>
-                      <img
-                        src={item.image || "https://via.placeholder.com/150"}
-                        alt={item.productName}
-                        style={{ width: 50, height: 50, marginRight: 10 }}
-                      />
-                      <Typography>
-                        {item.productName} - {item.quantity} unidades - ${item.price.toFixed(2)}
+              <Button
+                variant="contained"
+                onClick={() => toggleExpand(order.id)}
+                sx={{ whiteSpace: "nowrap" }}
+              >
+                {expandedOrder === order.id ? "Ocultar Detalles" : "Ver Detalles"}
+              </Button>
+            </Box>
+
+            <Collapse in={expandedOrder === order.id} unmountOnExit>
+              <Box mt={2}>
+                <Typography variant="subtitle1" fontWeight="bold" mb={1}>
+                  Detalles de la Orden
+                </Typography>
+                {order.items.map((item, index) => (
+                  <Box
+                    key={index}
+                    display="flex"
+                    alignItems="center"
+                    mt={1}
+                    sx={{ borderBottom: "1px solid #eee", pb: 1 }}
+                  >
+                    <img
+                      src={item.image || "https://via.placeholder.com/50"}
+                      alt={item.productName}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        objectFit: "cover",
+                        marginRight: 10,
+                        borderRadius: 4,
+                      }}
+                    />
+                    <Box>
+                      <Typography variant="body2" fontWeight="medium">
+                        {item.productName}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Cantidad: {item.quantity} &bull; Precio: ${item.price.toFixed(2)}
                       </Typography>
                     </Box>
-                  ))}
-                </Box>
-              </Collapse>
-            </Paper>
-          </Grid>
+                  </Box>
+                ))}
+              </Box>
+            </Collapse>
+          </Paper>
         ))}
-      </Grid>
+      </Stack>
     </Container>
   );
 };
