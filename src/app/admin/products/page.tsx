@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import AdminLayout from "@/components/AdminLayout";
 import {
   Box,
   Typography,
@@ -20,21 +19,23 @@ import {
   TextField,
   DialogActions,
   CircularProgress,
+  Chip,
 } from "@mui/material";
-import { Add, Edit, Delete } from "@mui/icons-material";
+import { Plus, Edit, Trash } from "lucide-react"; // Usamos Lucide para los iconos
 import axiosInstance from "@/utils/axiosInstance";
+import AdminLayout from "@/components/AdminLayout";
 
 interface Product {
   id: number;
   name: string;
-  description: string,
+  description: string;
   price: number;
   stock: number;
   category: string;
   image: string;
 }
 
-const ProductsPage = () => {
+const ProductsPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -54,7 +55,7 @@ const ProductsPage = () => {
   }, []);
 
   const handleOpenModal = (product?: Product) => {
-    setCurrentProduct(product || null); // Si hay producto, lo estamos editando; si no, es nuevo
+    setCurrentProduct(product || null);
     setModalOpen(true);
   };
 
@@ -65,14 +66,11 @@ const ProductsPage = () => {
 
   const handleSaveProduct = () => {
     if (currentProduct?.id) {
-      // Editar producto existente
       axiosInstance
         .put(`/products/${currentProduct.id}`, currentProduct)
         .then(() => {
           setProducts((prev) =>
-            prev.map((p) =>
-              p.id === currentProduct.id ? currentProduct : p
-            )
+            prev.map((p) => (p.id === currentProduct.id ? currentProduct : p))
           );
           handleCloseModal();
         })
@@ -80,7 +78,6 @@ const ProductsPage = () => {
           console.error("Error updating product:", error);
         });
     } else {
-      // Crear nuevo producto
       axiosInstance
         .post("/products", currentProduct)
         .then((response) => {
@@ -107,7 +104,12 @@ const ProductsPage = () => {
   if (loading) {
     return (
       <AdminLayout>
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="60vh"
+        >
           <CircularProgress />
         </Box>
       </AdminLayout>
@@ -117,24 +119,30 @@ const ProductsPage = () => {
   return (
     <AdminLayout>
       <Box>
-        <Typography variant="h4" mb={2}>
-          Gestión de Productos
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<Add />}
-          onClick={() => handleOpenModal()}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
         >
-          Nuevo Producto
-        </Button>
+          <Typography variant="h4" fontWeight="bold">
+            Gestión de Productos
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Plus size={20} />}
+            onClick={() => handleOpenModal()}
+          >
+            Nuevo Producto
+          </Button>
+        </Box>
         <TableContainer component={Paper} sx={{ mt: 2 }}>
           <Table>
-            <TableHead>
+            <TableHead sx={{ bgcolor: "#f4f6f8" }}>
               <TableRow>
                 <TableCell>Imagen</TableCell>
                 <TableCell>Nombre</TableCell>
-                <TableCell>Description</TableCell>
+                <TableCell>Descripción</TableCell>
                 <TableCell>Precio</TableCell>
                 <TableCell>Stock</TableCell>
                 <TableCell>Categoría</TableCell>
@@ -143,25 +151,60 @@ const ProductsPage = () => {
             </TableHead>
             <TableBody>
               {products.map((product) => (
-                <TableRow key={product.id}>
+                <TableRow key={product.id} hover>
                   <TableCell>
                     <img
                       src={product.image}
                       alt={product.name}
-                      style={{ width: 50, height: 50, borderRadius: 5 }}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 5,
+                        objectFit: "cover",
+                      }}
                     />
                   </TableCell>
-                  <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.description}</TableCell>
-                  <TableCell>${product.price.toFixed(2)}</TableCell>
-                  <TableCell>{product.stock}</TableCell>
-                  <TableCell>{product.category}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleOpenModal(product)}>
-                      <Edit />
+                    <Typography fontWeight="bold">{product.name}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="body2" color="text.secondary">
+                      {product.description}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography color="success.main">
+                      ${product.price.toFixed(2)}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      color={
+                        product.stock > 10 ? "success.main" : "error.main"
+                      }
+                    >
+                      {product.stock}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={product.category}
+                      color="primary"
+                      size="small"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleOpenModal(product)}
+                    >
+                      <Edit size={18} />
                     </IconButton>
-                    <IconButton onClick={() => handleDeleteProduct(product.id)}>
-                      <Delete />
+                    <IconButton
+                      color="error"
+                      onClick={() => handleDeleteProduct(product.id)}
+                    >
+                      <Trash size={18} />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -188,8 +231,8 @@ const ProductsPage = () => {
                 }))
               }
             />
-             <TextField
-              label="Description"
+            <TextField
+              label="Descripción"
               fullWidth
               margin="normal"
               value={currentProduct?.description || ""}
@@ -255,7 +298,7 @@ const ProductsPage = () => {
             <Button onClick={handleCloseModal} color="secondary">
               Cancelar
             </Button>
-            <Button onClick={handleSaveProduct} color="primary">
+            <Button onClick={handleSaveProduct} variant="contained">
               Guardar
             </Button>
           </DialogActions>

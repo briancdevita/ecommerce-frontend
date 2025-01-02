@@ -8,31 +8,25 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import Link from "next/link";
 import { Badge } from "@mui/material";
 import { useCartDrawer } from "@/app/context/CartDrawerContext";
 import AuthModal from "./AuthModal";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import LogoutIcon from '@mui/icons-material/Logout';
-import LoginIcon from '@mui/icons-material/Login';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LogoutIcon from "@mui/icons-material/Logout";
+import LoginIcon from "@mui/icons-material/Login";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { logout } from '../redux/slices/authSlice'
+import { logout } from "../redux/slices/authSlice";
 import { clearCart } from "@/redux/slices/cartSlice";
 
-
-
-
-
 const Navbar = () => {
-
   const { openDrawer } = useCartDrawer();
-  const cartItems = useSelector((state: RootState)=> state.cart.items)
+  const cartItems = useSelector((state: RootState) => state.cart.items);
 
-
-
-  const {user} = useSelector((state: RootState)=> state.auth);
-  const dispatch = useDispatch()
+  const { user } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
 
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
@@ -41,13 +35,11 @@ const Navbar = () => {
   const handleOpenAuthModal = () => setAuthModalOpen(true);
   const handleCloseAuthModal = () => setAuthModalOpen(false);
 
-
   const handleLogout = () => {
     dispatch(logout()); // Actualiza el estado global
     localStorage.removeItem("token"); // Limpia el token almacenado
-    dispatch(clearCart())
+    dispatch(clearCart());
   };
-
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -69,27 +61,31 @@ const Navbar = () => {
 
           {/* Mostrar dependiendo del estado del usuario */}
           {user ? (
-
             <>
-            <Box display="flex" alignItems="center" gap={2}>
-              
-              <Button color="inherit" onClick={handleLogout}>
-                <LogoutIcon/>
-              </Button>
-            </Box>
+              <Box display="flex" alignItems="center" gap={2}>
+                {/* Ícono de Dashboard solo si el usuario es ADMIN */}
+                {user.roles.includes("ADMIN") && (
+                  <IconButton color="inherit">
+                    <Link href="/admin/orders" style={{ textDecoration: "none", color: "inherit" }}>
+                      <DashboardIcon sx={{ color: "white" }} />
+                    </Link>
+                  </IconButton>
+                )}
 
-              <IconButton color="inherit" >
+                <Button color="inherit" onClick={handleLogout}>
+                  <LogoutIcon />
+                </Button>
+              </Box>
+
+              <IconButton color="inherit">
                 <Link href="/profile">
-                <AccountCircleIcon sx={{color:"white"}}/>
+                  <AccountCircleIcon sx={{ color: "white" }} />
                 </Link>
-            </IconButton>
+              </IconButton>
             </>
-
-            
-            
           ) : (
             <Button color="inherit" onClick={handleOpenAuthModal}>
-              <LoginIcon/>
+              <LoginIcon />
             </Button>
           )}
         </Toolbar>

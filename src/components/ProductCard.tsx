@@ -1,45 +1,71 @@
-
 "use client";
 import { Box, Typography, Button } from "@mui/material";
 import { Product } from "@/types/product";
 
+
 interface ProductCardProps {
   product: Product;
-  onClick?: () => void; // `onClick` opcional
 }
 
-export default function ProductCard({ product, onClick }: ProductCardProps) {
+export default function ProductCard({ product }: ProductCardProps) {
+
   return (
     <Box
-      onClick={onClick} // Agregamos `onClick` si está definido
+
       sx={{
         maxWidth: 250,
         minWidth: 250,
         borderRadius: 2,
         overflow: "hidden",
-        boxShadow: 3,
+        boxShadow: 2,
         position: "relative",
-        bgcolor: "#fff",
+        bgcolor: "#ffffff",
         m: 1,
-        cursor: onClick ? "pointer" : "default", // Cambia el cursor si es clickeable
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        "&:hover": {
+          boxShadow: 4,
+        },
       }}
     >
-      {/* Imagen del producto */}
+      {/* Contenedor para manejar la imagen */}
       <Box
-        component="img"
-        src={product.image || "https://via.placeholder.com/200"}
-        alt={product.name}
         sx={{
           width: "100%",
           height: 150,
-          objectFit: "contain",
-          bgcolor: "#f5f5f5",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          bgcolor: "#ffffff",
+          borderRadius: "4px 4px 0 0", // Bordes redondeados superiores
+          overflow: "hidden", // Asegura que nada sobresalga
         }}
-      />
+      >
+        <Box
+          component="img"
+          src={product.image || "https://via.placeholder.com/200"}
+          alt={product.name}
+          sx={{
+            width: "auto",
+            height: "100%", // Mantiene el alto al máximo
+            maxHeight: "100%",
+            maxWidth: "100%", // Evita que se deforme
+          }}
+        />
+      </Box>
 
       <Box sx={{ p: 2 }}>
         {/* Nombre del Producto */}
-        <Typography variant="h6" component="h2" noWrap>
+        <Typography
+          variant="h6"
+          component="h2"
+          sx={{
+            fontWeight: "bold",
+            fontSize: "1rem",
+            color: "#1e293b",
+            lineHeight: 1.2,
+            mb: 1,
+          }}
+        >
           {product.name}
         </Typography>
 
@@ -47,8 +73,15 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ fontSize: "0.9rem" }}
-          noWrap
+          sx={{
+            fontSize: "0.85rem",
+            lineHeight: 1.4,
+            mb: 1,
+            display: "-webkit-box",
+            WebkitLineClamp: 2, // Muestra hasta 2 líneas
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
         >
           {product.description}
         </Typography>
@@ -57,13 +90,29 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
         <Typography
           variant="h6"
           color="primary"
-          sx={{ mt: 1, fontWeight: "bold" }}
+          sx={{
+            mt: 1,
+            fontWeight: "bold",
+            fontSize: "1.1rem",
+          }}
         >
-          ${product.price}
+          ${product.price.toFixed(2)}
         </Typography>
 
         {/* Categoría */}
-        <Typography variant="caption" color="text.secondary">
+        <Typography
+          variant="caption"
+          sx={{
+            display: "inline-block",
+            mt: 1,
+            borderRadius: 1,
+            bgcolor: "#e2e8f0",
+            px: 1.5,
+            py: 0.5,
+            fontSize: "0.75rem",
+            color: "#475569",
+          }}
+        >
           {product.category}
         </Typography>
 
@@ -72,7 +121,12 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
           variant="contained"
           size="small"
           color="primary"
-          sx={{ mt: 2, width: "100%" }}
+          sx={{
+            mt: 2,
+            width: "100%",
+            textTransform: "none",
+            fontWeight: "bold",
+          }}
         >
           Ver detalles
         </Button>

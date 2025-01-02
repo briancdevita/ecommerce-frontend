@@ -1,4 +1,3 @@
-// admin/users/page.tsx
 "use client";
 
 import AdminLayout from "@/components/AdminLayout";
@@ -20,17 +19,17 @@ import {
   TextField,
   DialogActions,
   Button,
+  Chip,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/utils/axiosInstance";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Edit2, Trash } from "lucide-react"; // Lucide icons para un diseño moderno.
 
 interface User {
   id: number;
   username: string;
   email: string;
-  roles: { name: string }[]; // Roles con nombres
+  roles: { name: string }[];
 }
 
 export default function UsersPage() {
@@ -84,7 +83,7 @@ export default function UsersPage() {
       .put(`/admin/user/${editingUser.id}`, {
         username: editingUser.username,
         email: editingUser.email,
-        roles: editingUser.roles.map((role) => role.name), // Asegura el formato de roles
+        roles: editingUser.roles.map((role) => role.name),
       })
       .then(() => {
         alert("Usuario actualizado con éxito");
@@ -115,12 +114,12 @@ export default function UsersPage() {
   return (
     <AdminLayout>
       <Box>
-        <Typography variant="h4" mb={3}>
+        <Typography variant="h4" fontWeight="bold" mb={3}>
           Gestión de Usuarios
         </Typography>
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{ boxShadow: 3, borderRadius: 2 }}>
           <Table>
-            <TableHead>
+            <TableHead sx={{ bgcolor: "#f4f6f8" }}>
               <TableRow>
                 <TableCell>Usuario</TableCell>
                 <TableCell>Email</TableCell>
@@ -130,24 +129,34 @@ export default function UsersPage() {
             </TableHead>
             <TableBody>
               {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>{user.username}</TableCell>
+                <TableRow key={user.id} hover>
+                  <TableCell>
+                    <Typography fontWeight="bold">{user.username}</Typography>
+                  </TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
-                    {user.roles.map((role) => role.name).join(", ")}
+                    {user.roles.map((role) => (
+                      <Chip
+                        key={role.name}
+                        label={role.name}
+                        size="small"
+                        color="primary"
+                        sx={{ mr: 1 }}
+                      />
+                    ))}
                   </TableCell>
                   <TableCell>
                     <IconButton
                       color="primary"
                       onClick={() => handleEdit(user)}
                     >
-                      <EditIcon />
+                      <Edit2 size={18} />
                     </IconButton>
                     <IconButton
                       color="error"
                       onClick={() => handleDelete(user.id)}
                     >
-                      <DeleteIcon />
+                      <Trash size={18} />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -158,10 +167,7 @@ export default function UsersPage() {
       </Box>
 
       {/* Modal para Editar Usuario */}
-      <Dialog
-        open={openEditDialog}
-        onClose={() => setOpenEditDialog(false)}
-      >
+      <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
         <DialogTitle>Editar Usuario</DialogTitle>
         <DialogContent>
           <TextField
@@ -186,33 +192,28 @@ export default function UsersPage() {
               )
             }
           />
-
-<TextField
-  label="Roles"
-  fullWidth
-  margin="normal"
-  value={editingUser?.roles?.map((role) => role.name).join(", ") || ""} // Extrae los nombres y convierte a string
-  onChange={(e) =>
-    setEditingUser((prev) =>
-      prev
-        ? {
-            ...prev,
-            roles: e.target.value.split(",").map((role) => ({ name: role.trim() })), // Convierte string a array de objetos
-          }
-        : null
-    )
-  }
-/>
-
-
+          <TextField
+            label="Roles"
+            fullWidth
+            margin="normal"
+            value={editingUser?.roles.map((role) => role.name).join(", ") || ""}
+            onChange={(e) =>
+              setEditingUser((prev) =>
+                prev
+                  ? {
+                      ...prev,
+                      roles: e.target.value
+                        .split(",")
+                        .map((role) => ({ name: role.trim() })),
+                    }
+                  : null
+              )
+            }
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenEditDialog(false)}>Cancelar</Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSave}
-          >
+          <Button variant="contained" color="primary" onClick={handleSave}>
             Guardar
           </Button>
         </DialogActions>
