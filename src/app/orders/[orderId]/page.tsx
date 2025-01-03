@@ -14,64 +14,75 @@ import {
 } from "@mui/material";
 
 import withAuth from "@/utils/withAuth";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
+interface OrderItem {
+  productName: string;
+  image: string;
+  quantity: number;
+  price: number;
+}
 
 interface Order {
   id: number;
   orderDate: string;
   status: string;
-  totalPrice: number;
-  items: {
-    productName: string;
-    image: string;
-  }[];
+  subtotal: number;
+  discountAmount: number;
+  finalAmount: number;
+  items: OrderItem[];
 }
 
 function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-
-
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
     axiosInstance
       .get("/orders/user")
       .then((response) => {
+        console.log("Fetched Orders:", response.data); // Log para depuración
         setOrders(response.data);
         setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching orders:", error);
         setLoading(false);
+        toast.error("Error al obtener las órdenes. Inténtalo de nuevo.");
       });
-  }, []);
+  }, [dispatch]);
 
-  /** 
-   * handlePay:
+  /**
+   * handleOneTimePayment:
    * - Llama a la ruta "/api/stripe" para crear la Checkout Session o PaymentIntent (según tu backend).
    * - En este ejemplo, enviamos lineItems para un Checkout Session; ajusta a tu caso.
    */
-  async function handleOneTimePayment(orderId: number, productName: string, totalPrice: number, productImage: string) {
-    console.log('entre')
+  async function handleOneTimePayment(
+    orderId: number,
+    productName: string,
+    finalAmount: number,
+    productImage: string
+  ) {
     try {
-      const response = await fetch('/api/stripe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/stripe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          modeType: 'payment',
+          modeType: "payment",
           lineItems: [
             {
               price_data: {
-                currency: 'usd',
+                currency: "usd",
                 product_data: {
                   name: productName, // Nombre del producto
-                  images: [productImage], // Aquí va la URL de la imagen
+                  images: [productImage], // URL de la imagen
                 },
-                unit_amount: Math.round(totalPrice * 100)// Precio en centavos
+                unit_amount: Math.round(finalAmount * 100), // Precio en centavos
               },
               quantity: 1, // Cantidad de productos
-            }
+            },
           ],
           orderId: orderId,
         }),
@@ -81,10 +92,11 @@ function OrdersPage() {
         window.location.href = data.url;
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error during payment:", error);
+      toast.error("Hubo un problema al procesar el pago. Inténtalo de nuevo.");
     }
   }
-  
+
   // Mientras cargan las órdenes, muestra un spinner
   if (loading) {
     return (
@@ -109,7 +121,7 @@ function OrdersPage() {
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        My orders
+        Mis Órdenes
       </Typography>
       <Box>
         {orders.map((order) => (
@@ -142,10 +154,10 @@ function OrdersPage() {
             {/* Detalles de la orden */}
             <Box sx={{ flex: 1 }}>
               <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                Order #{order.id}
+                Orden #{order.id}
               </Typography>
               <Typography variant="body2" color="textSecondary">
-                Date: {new Date(order.orderDate).toLocaleDateString()}
+                Fecha: {new Date(order.orderDate).toLocaleDateString()}
               </Typography>
               <Typography
                 sx={{
@@ -167,50 +179,77 @@ function OrdersPage() {
                 {order.status}
               </Typography>
               <Divider sx={{ my: 2 }} />
-              <Typography variant="body2">
-                Total: <strong>${order.totalPrice.toFixed(2)}</strong>
-              </Typography>
+              {/* Mostrar detalles de subtotal y descuento si existen */}
+              {order.discountAmount > 0 && (
+                <>
+                  <Box display="flex" justifyContent="space-between" alignItems="center" mt={1}>
+                    <Typography variant="body2" color="textSecondary">
+                      Subtotal: ${order.finalAmount.toFixed(2)}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Descuento: -${order.discountAmount.toFixed(2)}
+                    </Typography>
+                  </Box>
+                  <Box display="flex" justifyContent="space-between" alignItems="center" mt={1}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Total
+                    </Typography>
+                    <Typography variant="h6" fontWeight="bold" color="primary.main">
+                      ${order.finalAmount.toFixed(2)}
+                    </Typography>
+                  </Box>
+                </>
+              )}
+              {/* Total sin descuento */}
+              {!order.discountAmount && (
+                <Box display="flex" justifyContent="space-between" mt={2}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Total
+                  </Typography>
+                  <Typography variant="h6" fontWeight="bold" color="primary.main">
+                    ${order.finalAmount.toFixed(2)}
+                  </Typography>
+                </Box>
+              )}
               <Button
-  variant="contained"
-  color={order.status === "COMPLETED" ? "warning" : "success"}
-  size="small"
-  sx={{ mt: 2 }}
-  onClick={() => {
-    if (order.status === "COMPLETED") {
-      // Lógica para solicitar el reembolso (si la deseas implementar)
-      console.log("Refund logic for order:", order.id);
-    } else {
-      // Lógica de pago
-      handleOneTimePayment(
-        order.id,
-        order.items[0]?.productName,
-        order.totalPrice,
-        order.items[0]?.image
-      );
-    }
-  }}
->
-  {order.status === "COMPLETED" ? "Refund" : "Pay"}
-</Button>
-
-
+                variant="contained"
+                color={order.status === "COMPLETED" ? "warning" : "success"}
+                size="small"
+                sx={{ mt: 2 }}
+                onClick={() => {
+                  if (order.status === "COMPLETED") {
+                    // Lógica para solicitar el reembolso (si la deseas implementar)
+                    console.log("Refund logic for order:", order.id);
+                  } else {
+                    // Lógica de pago
+                    handleOneTimePayment(
+                      order.id,
+                      order.items[0]?.productName,
+                      order.finalAmount,
+                      order.items[0]?.image
+                    );
+                  }
+                }}
+              >
+                {order.status === "COMPLETED" ? "Refund" : "Pay"}
+              </Button>
             </Box>
             <Typography
-        variant="body2"
-        sx={{
-          backgroundColor: "#E3F2FD",
-          color: "#0D47A1",
-          fontWeight: "bold",
-          fontSize: "0.9rem",
-          borderRadius: 1,
-          p: "1px 12px",
-          display: "inline-block",
-          mt: 1,
-          ml: 5
-        }}
-      >
-        Info: <strong>15-day warranty included</strong>
-      </Typography>
+              variant="body2"
+              sx={{
+                backgroundColor: "#E3F2FD",
+                color: "#0D47A1",
+                fontWeight: "bold",
+                fontSize: "0.9rem",
+                borderRadius: 1,
+                p: "1px 12px",
+                display: "inline-block",
+                mt: 1,
+                ml: 5,
+              }}
+            >
+              Info: <strong>15-day warranty included</strong>
+            </Typography>
           </Card>
         ))}
       </Box>
