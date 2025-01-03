@@ -8,19 +8,17 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import Link from "next/link";
 import { Badge, Divider, Menu, MenuItem } from "@mui/material";
 import { useCartDrawer } from "@/app/context/CartDrawerContext";
 import AuthModal from "./AuthModal";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import LogoutIcon from "@mui/icons-material/Logout";
 import LoginIcon from "@mui/icons-material/Login";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { logout } from "../redux/slices/authSlice";
 import { clearCart } from "@/redux/slices/cartSlice";
-import PromotionalBanner from "./PromotionalBanner";
+import {AddLocationAltOutlined} from "@mui/icons-material";
 
 const Navbar = () => {
   const { openDrawer } = useCartDrawer();
@@ -74,19 +72,22 @@ const Navbar = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
+        
         <Toolbar>
+          
           {/* Título y enlace a la página principal */}
           <Typography variant="h6" sx={{ flexGrow: 1, color: "white" }}>
             <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
-              E-Commerce
+              E-Commerce  
             </Link>
+            
           </Typography>
-
+          
           {/* Banner promocional dinámico */}
           <Typography
             variant="body1"
             sx={{
-              flexGrow: 600,
+              flexGrow: 4,
               textAlign: "center",
               color: "#ffeb3b",
               fontWeight: "bold",
@@ -95,6 +96,26 @@ const Navbar = () => {
           >
             {promotion}
           </Typography>
+
+          <Typography
+  variant="body1"
+  sx={{
+    ml: 3,
+    display: "flex",
+    alignItems: "center",
+    color:"#010E21",
+    backgroundColor: "#fffbea",
+    padding: "4px 12px",
+    borderRadius: "8px",
+    border: "1px solid #f0c14b",
+    fontWeight: "bold",
+  
+  }}
+>
+  <AddLocationAltOutlined sx={{ fontSize: 20, color: "#010E21", mr: 1 }} />
+  Send to {user?.username || ""}: {user?.address || "Buenos Aires"}
+</Typography>
+
 
           {/* Botón del carrito */}
           <IconButton color="inherit" onClick={openDrawer}>
@@ -106,6 +127,7 @@ const Navbar = () => {
           {/* Menú desplegable para el usuario */}
           {user ? (
             <>
+           
               <IconButton
                 color="inherit"
                 onClick={handleMenuOpen}
@@ -157,10 +179,13 @@ const Navbar = () => {
             </Button>
           )}
         </Toolbar>
+        
 
         {/* Modal de autenticación */}
         <AuthModal open={isAuthModalOpen} onClose={handleCloseAuthModal} />
+        
       </AppBar>
+      
     </Box>
   );
 };

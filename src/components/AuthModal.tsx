@@ -27,7 +27,7 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
   // 
   const dispatch = useDispatch()
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
+  const [formData, setFormData] = useState({ username: "", email: "", password: "", address: "" });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,18 +37,21 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
     try {
       const endpoint = isLogin ? "/auth/authenticate" : "/auth/register";
       const response = await axiosInstance.post(endpoint, formData);
-  
+      console.log(formData)
       if (isLogin) {
         const token = response.data.token;
         const decoded: any = jwtDecode(token);
+        console.log(decoded)
   
         dispatch(
           login({
             token: token,
             user: {
+              id: decoded.id,
               username: decoded.sub,
               email: decoded.email,
               roles: decoded.roles.map((role: { authority: string }) => role.authority),
+              address: decoded.address,
             },
           })
         );

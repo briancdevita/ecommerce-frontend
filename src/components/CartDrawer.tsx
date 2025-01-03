@@ -9,7 +9,6 @@ import {
   Divider,
   List,
   ListItem,
-  ListItemText,
   Avatar,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -20,16 +19,24 @@ import OrderSummaryModal from "./OrderSummaryModal";
 import { removeItem } from "@/redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import CouponInput from "./CouponInput";
 
 export default function CartDrawer() {
   const { isOpen, closeDrawer } = useCartDrawer();
   const [showOrderSummary, setShowOrderSummary] = useState(false);
-  const cartItems = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
 
-  const total = cartItems
-    .reduce((sum, item) => sum + item.product.price * item.quantity, 0)
-    .toFixed(2);
+  // Seleccionar items y detalles del cupón desde el estado de Redux
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const couponCode = useSelector((state: RootState) => state.cart.couponCode);
+  const discountPercentage = useSelector((state: RootState) => state.cart.discountPercentage);
+  const couponStatus = useSelector((state: RootState) => state.cart.status);
+
+
+  // Calcular subtotales y totales
+  const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const discount = (discountPercentage / 100) * subtotal;
+  const finalTotal = subtotal - discount;
 
   return (
     <Drawer anchor="right" open={isOpen} onClose={closeDrawer}>
@@ -95,6 +102,7 @@ export default function CartDrawer() {
                       Remove
                     </Button>
                   </Box>
+
                   <Typography
                     variant="body1"
                     fontWeight="bold"
@@ -113,15 +121,42 @@ export default function CartDrawer() {
                   Subtotal
                 </Typography>
                 <Typography variant="h6" fontWeight="bold" color="primary.main">
-                  ${total}
+                  ${subtotal.toFixed(2)}
                 </Typography>
               </Box>
+              {/* Mostrar descuento si hay un cupón aplicado */}
+              {couponCode && (
+                <Box display="flex" justifyContent="space-between" alignItems="center" mt={1}>
+                  <Typography variant="subtitle1" fontWeight="bold" color="secondary.main">
+                    Discount ({discountPercentage}%)
+                  </Typography>
+                  <Typography variant="h6" fontWeight="bold" color="secondary.main">
+                    -${discount.toFixed(2)}
+                  </Typography>
+                </Box>
+              )}
               <Typography variant="body2" color="text.secondary" mt={1}>
                 Taxes and shipping calculated at checkout.
               </Typography>
+              {/* Mostrar el total final si hay un descuento */}
+              {couponCode && (
+                <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Total
+                  </Typography>
+                  <Typography variant="h6" fontWeight="bold" color="primary.main">
+                    ${finalTotal.toFixed(2)}
+                  </Typography>
+                </Box>
+              )}
             </Box>
 
-            {/* Order Button */}
+            {/* Input de Cupón */}
+            <Box mt={3}> 
+              <CouponInput />
+            </Box>
+
+            {/* Botón de Orden */}
             <Button
               variant="contained"
               color="primary"
@@ -134,9 +169,12 @@ export default function CartDrawer() {
                 fontWeight: "bold",
               }}
               onClick={() => setShowOrderSummary(true)}
+              disabled={cartItems.length === 0 || (couponStatus === 'loading')}
             >
-              Proceed to Checkout
+              Proceed to Checkout {couponCode ? `($${finalTotal.toFixed(2)})` : `($${subtotal.toFixed(2)})`}
             </Button>
+
+            {/* Modal de Resumen de Orden */}
             <OrderSummaryModal
               open={showOrderSummary}
               onClose={() => setShowOrderSummary(false)}

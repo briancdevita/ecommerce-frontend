@@ -8,7 +8,7 @@ import { jwtDecode } from "jwt-decode";
 const AppInitializer = () => {
   const dispatch = useDispatch();
   const { token, user } = useSelector((state: RootState) => state.auth);
-
+  console.log({user})
   useEffect(() => {
     if (token && !user) {
       try {
@@ -18,6 +18,8 @@ const AppInitializer = () => {
           login({
             token,
             user: {
+              id: decoded.id,
+              address: decoded.address,
               username: decoded.sub,
               email: decoded.email,
               roles: decoded.roles,
