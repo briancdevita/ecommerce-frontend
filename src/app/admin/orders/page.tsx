@@ -27,14 +27,13 @@ interface Order {
   username: string;
   orderDate: string;
   status: string;
-  totalPrice: number;
+  finalAmount: number;
   receiptUrl?: string;
 }
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  console.log(orders)
 
   const handleReceipt = (receipUrl: string) => {
     redirect(receipUrl);
@@ -147,7 +146,7 @@ const OrdersPage = () => {
                   </TableCell>
                   <TableCell>
                     <Typography fontWeight="bold" color="success.main">
-                      ${order.totalPrice.toFixed(2)}
+                      ${order.finalAmount.toFixed(2)}
                     </Typography>
                   </TableCell>
                   <TableCell>

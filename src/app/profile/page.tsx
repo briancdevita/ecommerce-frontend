@@ -13,14 +13,15 @@ import {
   IconButton,
 } from '@mui/material';
 import { Email, LocationOn, Person, Edit } from '@mui/icons-material';
-import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { login } from '@/redux/slices/authSlice';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import axiosInstance from '@/utils/axiosInstance';
+import withAuth from '@/utils/withAuth';
 
-export default function ProfilePage() {
+ function ProfilePage() {
   const user = useSelector((state: RootState) => state.auth.user);
   const [address, setAddress] = useState(user?.address || '');
   const [loading, setLoading] = useState(false);
@@ -32,9 +33,9 @@ export default function ProfilePage() {
     setLoading(true);
     const token = localStorage.getItem('token');
 
-    axios
+    axiosInstance
       .patch(
-        `http://localhost:8080/users/${user.id}/address`,
+        `http://localhost:8080/users/${user?.id}/address`,
         { address },
         {
           headers: {
@@ -177,3 +178,4 @@ export default function ProfilePage() {
     </Box>
   );
 }
+export default withAuth(ProfilePage);

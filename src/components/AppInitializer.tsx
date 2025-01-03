@@ -8,7 +8,6 @@ import { jwtDecode } from "jwt-decode";
 const AppInitializer = () => {
   const dispatch = useDispatch();
   const { token, user } = useSelector((state: RootState) => state.auth);
-  console.log({user})
   useEffect(() => {
     if (token && !user) {
       try {

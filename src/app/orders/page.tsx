@@ -21,7 +21,7 @@ interface Order {
   orderDate: string;
   status: string;
   receiptUrl?: string;
-  totalPrice: number;
+  finalAmount: number;
   items: {
     productName: string;
     quantity: number;
@@ -41,7 +41,6 @@ const OrdersPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
 
-  console.log(orders)
 
   const handleReceipt = (receipUrl: string) => {
     redirect(receipUrl)
@@ -131,7 +130,8 @@ const OrdersPage: React.FC = () => {
                     Total:
                   </Typography>
                   <Chip
-                    label={`$${order.totalPrice.toFixed(2)}`}
+                    label={`$${order.finalAmount
+                      .toFixed(2)}`}
                     size="small"
                     color="primary"
                   />
