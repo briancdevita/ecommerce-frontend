@@ -23,7 +23,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { logout } from "@/redux/slices/authSlice";
 import { clearCart } from "@/redux/slices/cartSlice";
-import { Dashboard } from "@mui/icons-material";
 
 const drawerWidth = 280;
 
@@ -102,7 +101,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ListItemIcon>
               <ShoppingCart size={20} color="#38bdf8" />
             </ListItemIcon>
-            <ListItemText primary="Productos" />
+            <ListItemText primary="Products" />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -115,7 +114,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ListItemIcon>
               <Users size={20} color="#38bdf8" />
             </ListItemIcon>
-            <ListItemText primary="Usuarios" />
+            <ListItemText primary="Users" />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -128,7 +127,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ListItemIcon>
               <Clipboard size={20} color="#38bdf8" />
             </ListItemIcon>
-            <ListItemText primary="Órdenes" />
+            <ListItemText primary="Orders" />
           </ListItemButton>
 
           
@@ -166,7 +165,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ListItemIcon>
               <Home size={20} color="#38bdf8" />
             </ListItemIcon>
-            <ListItemText primary="Inicio" />
+            <ListItemText primary="Home" />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -179,7 +178,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ListItemIcon>
               <LogOut size={20} color="#38bdf8" />
             </ListItemIcon>
-            <ListItemText primary="Salir" />
+            <ListItemText primary="Logout" />
           </ListItemButton>
         </ListItem>
 

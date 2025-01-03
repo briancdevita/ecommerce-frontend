@@ -26,29 +26,27 @@ function CheckoutPage() {
   const productImage = searchParams.get("images");
   const totalPrice = searchParams.get("totalPrice") // Convertir a número
   const productName = searchParams.get("productName");
-  console.log(totalPrice)
+
  
 
-  // 1. Handler para crear la Checkout Session y redirigir
+
   async function handleCheckout() {
     setLoading(true);
     try {
-      // Llamamos a nuestra ruta de API que crea la sesión de checkout
+
       const res = await fetch("/api/checkout_sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           lineItems: [
-            // Ejemplo usando price_data “al vuelo”.
-            // Si ya tienes "prices" creados en Stripe, puedes usar { price: 'price_XXX', quantity: 1 }
+
             {
               price_data: {
                 currency: "usd",
                 product_data: {
                   name: productName,
                   images: [productImage],
-                  // Puedes agregar imágenes, descripciones, etc.:
-                  // images: ["https://mi-cdn.com/imagen-producto.jpg"],
+                  
                 },
                 unit_amount: totalPrice,
               },
@@ -90,7 +88,7 @@ function CheckoutPage() {
         Checkout (Hosted) - Orden #{orderId}
       </Typography>
 
-      {/* Aquí puedes mostrar un resumen de la orden, detalles, etc. */}
+
       <Card variant="outlined">
         <CardContent>
           <Typography variant="body1" mb={2}>

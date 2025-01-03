@@ -43,7 +43,6 @@ function OrdersPage() {
     axiosInstance
       .get("/orders/user")
       .then((response) => {
-        console.log("Fetched Orders:", response.data); // Log para depuración
         setOrders(response.data);
         setLoading(false);
       })
@@ -54,11 +53,7 @@ function OrdersPage() {
       });
   }, [dispatch]);
 
-  /**
-   * handleOneTimePayment:
-   * - Llama a la ruta "/api/stripe" para crear la Checkout Session o PaymentIntent (según tu backend).
-   * - En este ejemplo, enviamos lineItems para un Checkout Session; ajusta a tu caso.
-   */
+
   async function handleOneTimePayment(
     orderId: number,
     productName: string,
@@ -219,7 +214,6 @@ function OrdersPage() {
                 onClick={() => {
                   if (order.status === "COMPLETED") {
                     // Lógica para solicitar el reembolso (si la deseas implementar)
-                    console.log("Refund logic for order:", order.id);
                   } else {
                     // Lógica de pago
                     handleOneTimePayment(

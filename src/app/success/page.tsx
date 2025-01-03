@@ -55,12 +55,10 @@ export default function SuccessPage() {
           }
         )
         .then(() => {
-          console.log("Orden actualizada a COMPLETED");
           if (receiptUrl) {
             axiosInstance
               .post(`/orders/${orderId}/receipt`, { receiptUrl })
               .then(() => {
-                console.log("Receipt URL successfully saved");
               })
               .catch((err) => console.error("Error saving receipt URL:", err));
           }

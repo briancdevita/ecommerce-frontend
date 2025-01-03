@@ -26,6 +26,7 @@ import {
 import { Plus, Edit, Trash } from "lucide-react"; // Usamos Lucide para los iconos
 import axiosInstance from "@/utils/axiosInstance";
 import AdminLayout from "@/components/AdminLayout";
+import Image from "next/image";
 
 interface Product {
   id: number;

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import axios from "axios";
+
 import { Product } from "@/types/product";
 import {
   Box,
@@ -11,12 +11,15 @@ import {
   CircularProgress,
   Container,
   TextField,
-  Grid,
+
   Divider,
   Rating,
+  
+  Grid,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/redux/thunks/cartThunks";
+import axiosInstance from "@/utils/axiosInstance";
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
@@ -29,7 +32,7 @@ const ProductDetail: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      axios
+      axiosInstance
         .get(`http://localhost:8080/products/${id}`) // Ajusta esta URL a tu backend
         .then((response) => {
           setProduct(response.data);

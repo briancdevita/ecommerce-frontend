@@ -1,21 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
 import ProductCarousel from "../../components/ProductCarousel";
 import { Product } from "@/types/product";
 import SearchBar from "@/components/SearchBar";
 import { Box, Typography } from "@mui/material";
 import FeaturedCategories from "@/components/FeaturedCategories";
 import EcommerceBenefits from "@/components/EcinnerceBenefits";
-import PromotionalBanner from "@/components/PromotionalBanner";
+import axiosInstance from "@/utils/axiosInstance";
 
 const ProductsPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    axios
+    axiosInstance
       .get("http://localhost:8080/products") // Ajusta la URL según tu backend
       .then((response) => {
         setProducts(response.data);
