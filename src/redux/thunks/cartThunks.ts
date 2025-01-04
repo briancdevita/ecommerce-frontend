@@ -28,7 +28,7 @@ export const addToCart =
       toast.success(`${product.name} Added to cart`);
     } catch (error) {
 
-      toast.error("There was a problem adding the product to the cart.");
+      toast.error("Sign in to add a product");
     }
   };
 
