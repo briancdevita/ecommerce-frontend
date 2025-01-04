@@ -113,10 +113,10 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
           })
         );
         localStorage.setItem("token", token);
-        toast.success(`¡Bienvenido ${decoded.sub}!`);
+        toast.success(`¡Welcome ${decoded.sub}!`);
         onClose();
       } else {
-        toast.success("Registro exitoso. Ahora puedes iniciar sesión.");
+        toast.success("Successful registration. Now you can log in.");
         setIsLogin(true);
         setFormData({ username: "", email: "", password: "", address: "" });
       }
@@ -125,16 +125,16 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
       if (error.response) {
         const { status, data } = error.response;
         if (status === 401 || status === 403) {
-          setGeneralError("Nombre de usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.");
+          setGeneralError("Incorrect username or password. Please try again.");
         } else if (status === 400 && data.message) {
           setGeneralError(data.message);
         } else {
-          setGeneralError("Ocurrió un error inesperado. Por favor, inténtalo más tarde.");
+          setGeneralError("An unexpected error occurred. Please try again later.");
         }
       } else {
-        setGeneralError("No se pudo conectar con el servidor. Verifica tu conexión a Internet.");
+        setGeneralError("Could not connect to the server. Check your Internet connection.");
       }
-      toast.error("Hubo un problema.");
+      toast.error("There was a problem.");
     }
   };
 
@@ -145,7 +145,7 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
           <DialogTitle>
             <Box display="flex" alignItems="center">
               {isLogin ? <LoginIcon sx={{ mr: 1 }} /> : <RegisterIcon sx={{ mr: 1 }} />}
-              {isLogin ? "Iniciar Sesión" : "Registro"}
+              {isLogin ? "Login" : "Register"}
             </Box>
           </DialogTitle>
           <DialogContent>
@@ -160,8 +160,8 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
               textColor="primary"
               variant="fullWidth"
             >
-              <Tab label="Iniciar Sesión" icon={<LoginIcon />} iconPosition="start" />
-              <Tab label="Registro" icon={<RegisterIcon />} iconPosition="start" />
+              <Tab label="Login" icon={<LoginIcon />} iconPosition="start" />
+              <Tab label="Register" icon={<RegisterIcon />} iconPosition="start" />
             </Tabs>
 
             {generalError && (
@@ -173,7 +173,7 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
             <Box mt={2}>
               {!isLogin && (
                 <TextField
-                  label="Correo Electrónico"
+                  label="Email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
@@ -191,7 +191,7 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
                 />
               )}
               <TextField
-                label="Nombre de Usuario"
+                label="User name"
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
@@ -208,7 +208,7 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
                 }}
               />
               <TextField
-                label="Contraseña"
+                label="Password"
                 name="password"
                 type="password"
                 value={formData.password}
@@ -227,7 +227,7 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
               />
               {!isLogin && (
                 <TextField
-                  label="Dirección"
+                  label="Address"
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
@@ -251,7 +251,7 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
                 fullWidth
                 sx={{ mt: 3, py: 1.5 }}
               >
-                {isLogin ? "Iniciar Sesión" : "Registrarse"}
+                {isLogin ? "Login" : "Register"}
               </Button>
             </Box>
           </DialogContent>

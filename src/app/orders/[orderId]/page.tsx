@@ -106,7 +106,7 @@ function OrdersPage() {
     return (
       <Container>
         <Typography variant="h5" textAlign="center" mt={4}>
-          No tienes órdenes todavía.
+        You dont have orders yet.
         </Typography>
       </Container>
     );
@@ -116,7 +116,7 @@ function OrdersPage() {
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Mis Órdenes
+        My Orders
       </Typography>
       <Box>
         {orders.map((order) => (
@@ -149,10 +149,10 @@ function OrdersPage() {
             {/* Detalles de la orden */}
             <Box sx={{ flex: 1 }}>
               <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                Orden #{order.id}
+                Order #{order.id}
               </Typography>
               <Typography variant="body2" color="textSecondary">
-                Fecha: {new Date(order.orderDate).toLocaleDateString()}
+                Date: {new Date(order.orderDate).toLocaleDateString()}
               </Typography>
               <Typography
                 sx={{
@@ -182,7 +182,7 @@ function OrdersPage() {
                       Subtotal: ${order.finalAmount.toFixed(2)}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                      Descuento: -${order.discountAmount.toFixed(2)}
+                      Discount: -${order.discountAmount.toFixed(2)}
                     </Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between" alignItems="center" mt={1}>

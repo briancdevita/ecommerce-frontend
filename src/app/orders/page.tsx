@@ -77,7 +77,8 @@ const OrdersPage: React.FC = () => {
     return (
       <Container>
         <Typography variant="h5" textAlign="center" mt={4}>
-          No tienes órdenes todavía.
+        You dont have orders yet.
+
         </Typography>
       </Container>
     );
